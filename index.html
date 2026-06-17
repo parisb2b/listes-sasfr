@@ -1391,7 +1391,7 @@ async function attribuerFromSidebar() {
     toast(lang === 'zh' ? '此人已被分配' : 'Cette personne est déjà assignée');
     return;
   }
-  assignees.push(email);
+  assignees.push(ne);
   try {
     await listsRef.doc(selectedListId).update({ assignees: assignees });
     document.getElementById('attribuer-input').value = '';
