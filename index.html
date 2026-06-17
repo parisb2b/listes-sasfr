@@ -132,11 +132,12 @@ input,select,textarea{font-family:inherit;}
 .mini-chip button{border:none;background:none;color:var(--color-accent-dark);font-size:11px;cursor:pointer;padding:0 3px;}
 
 .user-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding:12px 16px;}
-.user-footer-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.user-footer-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1 1 0;overflow:hidden;}
+.user-footer-left > div{overflow:hidden;min-width:0;}
 .avatar{width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
 .user-footer-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.user-footer-role{font-size:10px;color:var(--text-muted);}
-.user-footer-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.user-footer-role{font-size:10px;color:var(--text-muted);white-space:nowrap;}
+.user-footer-right{display:flex;align-items:center;gap:4px;flex-shrink:0;}
 .lang-mini{display:flex;gap:3px;}
 .lang-mini button{border:1px solid var(--border);background:#fff;border-radius:4px;padding:2px 6px;font-size:10px;color:var(--text-muted);}
 .lang-mini button.active{background:var(--blue-bg);color:var(--color-accent-dark);border-color:var(--blue-border);}
@@ -782,7 +783,7 @@ function startListeners() {
 
   function trackListTasks(listId) {
     if (!unsubTasksMap[listId]) {
-      unsubTasksMap[listId] = listsRef.doc(listId).collection('tasks').onSnapshot(function(taskSnap) {
+      unsubTasksMap[listId] = listsRef.doc(listId).collection('tasks').orderBy('createdAt', 'desc').onSnapshot(function(taskSnap) {
         var tasks = [];
         taskSnap.forEach(function(tDoc) { tasks.push({ id: tDoc.id, ...tDoc.data() }); });
         allTasksMap[listId] = tasks;
