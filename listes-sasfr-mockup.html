@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LISTES — Maquette v2 listes.sasfr.com</title>
+<style>
+:root{
+  --bg-page:#f3f4f6;
+  --bg-card:#ffffff;
+  --bg-sidebar:#ffffff;
+  --border:#e5e7eb;
+  --text-main:#111827;
+  --text-muted:#6b7280;
+  --color-accent:#3b82f6;
+  --color-accent-dark:#2563eb;
+  --red:#ef4444;
+  --red-bg:#fef2f2;
+  --red-border:#fecaca;
+  --blue:#3b82f6;
+  --blue-bg:#eff6ff;
+  --blue-border:#bfdbfe;
+  --green:#16a34a;
+  --green-bg:#f0fdf4;
+  --green-border:#86efac;
+  --amber:#d97706;
+  --amber-bg:#fffbeb;
+  --amber-border:#fde68a;
+  --radius:8px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Inter',"Segoe UI",Roboto,sans-serif;background:var(--bg-page);color:var(--text-main);font-size:14px;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+
+/* ===== AUTH ===== */
+#auth-screen{position:fixed;inset:0;background:var(--bg-page);display:flex;align-items:center;justify-content:center;z-index:200;}
+.auth-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:36px 32px;width:380px;max-width:90vw;box-shadow:0 8px 30px rgba(0,0,0,.08);}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.auth-logo .sq{width:34px;height:34px;border-radius:8px;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;}
+.auth-title{font-weight:700;font-size:18px;}
+.auth-sub{color:var(--text-muted);font-size:13px;margin:6px 0 22px;}
+.lang-toggle{display:flex;gap:6px;margin-bottom:18px;}
+.lang-toggle button{border:1px solid var(--border);background:#fff;border-radius:6px;padding:4px 10px;font-size:12px;color:var(--text-muted);}
+.lang-toggle button.active{background:var(--blue-bg);color:var(--color-accent-dark);border-color:var(--blue-border);font-weight:600;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:5px;font-weight:500;}
+.field input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13.5px;}
+.field input:focus{outline:none;border-color:var(--color-accent);box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.pw-wrap{position:relative;}
+.pw-wrap button{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:14px;color:var(--text-muted);}
+.row-between{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin:-2px 0 18px;color:var(--text-muted);}
+.row-between a{color:var(--color-accent-dark);text-decoration:none;}
+.btn-primary{width:100%;background:var(--color-accent);color:#fff;border:none;border-radius:7px;padding:11px;font-size:14px;font-weight:600;margin-bottom:14px;}
+.btn-primary:hover{background:var(--color-accent-dark);}
+.divider{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:12px;margin-bottom:14px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+.btn-google{width:100%;border:1px solid var(--border);background:#fff;border-radius:7px;padding:10px;font-size:13.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;}
+.auth-foot{text-align:center;font-size:13px;color:var(--text-muted);}
+.auth-foot a{color:var(--color-accent-dark);text-decoration:none;font-weight:600;}
+.demo-note{margin-top:16px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:7px;padding:9px 11px;font-size:11.5px;color:#92400e;line-height:1.5;}
+
+/* ===== APP SHELL ===== */
+#app{display:none;min-height:100vh;}
+.layout{display:flex;min-height:100vh;}
+
+/* ----- SIDEBAR (file-explorer style like Comptes Client) ----- */
+.sidebar{
+  width:230px;background:var(--bg-sidebar);border-right:1px solid var(--border);
+  min-height:100vh;flex-shrink:0;display:flex;flex-direction:column;
+}
+.sidebar-top{padding:16px 16px 0;}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.brand .sq{width:26px;height:26px;border-radius:6px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.brand-text{font-weight:700;font-size:14.5px;}
+.brand-text .accent{color:var(--color-accent);}
+
+.sidebar-scroll{flex:1;overflow-y:auto;padding:0 12px;}
+
+.gestion-btn{
+  width:100%;background:var(--bg-page);border:1px solid var(--border);border-radius:7px;
+  padding:8px 10px;font-size:12.5px;font-weight:600;color:var(--text-main);
+  display:flex;align-items:center;gap:7px;margin-bottom:16px;
+}
+.gestion-btn:hover{background:#e9eaec;}
+
+.sb-section-title{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin:14px 6px 6px;}
+.sb-empty{font-size:11.5px;color:#9ca3af;padding:4px 6px 10px;font-style:italic;}
+
+.all-task-item{
+  display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:7px;cursor:pointer;
+  font-size:13px;font-weight:700;margin-bottom:4px;background:#fef9ec;border:1px solid #fde68a;color:#92400e;
+}
+.all-task-item:hover{background:#fef3c7;}
+.all-task-item.active{background:#fde68a;}
+.all-task-item .count{margin-left:auto;background:#fff;color:#92400e;font-size:10.5px;padding:1px 7px;border-radius:10px;font-weight:700;}
+
+.list-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;
+  font-size:13px;color:var(--text-main);margin-bottom:2px;
+}
+.list-item:hover{background:var(--bg-page);}
+.list-item.active{background:var(--blue-bg);color:var(--color-accent-dark);font-weight:600;}
+.list-item .emoji{font-size:13px;flex-shrink:0;}
+.list-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-item .badge{
+  flex-shrink:0;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px;
+}
+.list-item .badge.red{background:#fee2e2;color:#b91c1c;}
+.list-item .badge.zero{background:var(--bg-page);color:#9ca3af;}
+
+.sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;}
+.attribuer-title{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.attribuer-target{font-size:11.5px;color:var(--text-main);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.attribuer-target .emoji{font-size:13px;}
+.attribuer-target b{font-weight:700;}
+.attribuer-row{display:flex;gap:6px;margin-bottom:6px;}
+.attribuer-row input{flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;}
+.btn-attribuer{width:100%;background:var(--color-accent);color:#fff;border:none;border-radius:6px;padding:8px;font-size:12.5px;font-weight:600;}
+.btn-attribuer:hover{background:var(--color-accent-dark);}
+.attribuer-hint{font-size:10.5px;color:#9ca3af;margin-top:6px;display:flex;align-items:center;gap:4px;}
+.attribuer-chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 8px;}
+.mini-chip{
+  display:flex;align-items:center;gap:4px;background:var(--blue-bg);border:1px solid var(--blue-border);
+  border-radius:14px;padding:2px 4px 2px 8px;font-size:10.5px;color:var(--color-accent-dark);font-weight:600;
+}
+.mini-chip button{border:none;background:none;color:var(--color-accent-dark);font-size:11px;cursor:pointer;padding:0 3px;}
+
+.user-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding:12px 16px;}
+.user-footer-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.user-footer-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.user-footer-role{font-size:10px;color:var(--text-muted);}
+.user-footer-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.lang-mini{display:flex;gap:3px;}
+.lang-mini button{border:1px solid var(--border);background:#fff;border-radius:4px;padding:2px 6px;font-size:10px;color:var(--text-muted);}
+.lang-mini button.active{background:var(--blue-bg);color:var(--color-accent-dark);border-color:var(--blue-border);}
+.btn-quit{border:none;background:none;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px;}
+.btn-quit:hover{color:var(--red);}
+
+/* ----- MAIN AREA ----- */
+.main{flex:1;padding:22px 28px;max-width:1300px;min-width:0;}
+.mobile-menu-btn{display:none;background:#fff;border:1px solid var(--border);border-radius:7px;font-size:16px;padding:6px 10px;margin-bottom:14px;}
+
+.main-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
+.main-title-block{display:flex;align-items:center;gap:10px;min-width:0;}
+.main-title-block .emoji-big{font-size:22px;}
+.main-title-text h1{margin:0;font-size:19px;font-weight:700;}
+.main-title-text .sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.header-actions{display:flex;gap:8px;flex-shrink:0;}
+.btn-pill{
+  border:1px solid var(--border);background:#fff;border-radius:7px;padding:8px 14px;
+  font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;color:var(--text-main);
+}
+.btn-pill:hover{background:var(--bg-page);}
+.btn-pill.excel{background:#dcfce7;border-color:#86efac;color:#166534;}
+.btn-pill.pdf{background:#fef3c7;border-color:#fde68a;color:#92400e;}
+.btn-pill.gerer{background:var(--blue-bg);border-color:var(--blue-border);color:var(--color-accent-dark);}
+
+.stat-cards{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px;margin-bottom:20px;}
+.stat-card{border-radius:10px;padding:16px 18px;}
+.stat-card .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.85;margin-bottom:6px;}
+.stat-card .val{font-size:24px;font-weight:700;}
+.stat-card.main{background:var(--color-accent);color:#fff;}
+.stat-card.red-c{background:#fff;border:1px solid var(--red-border);}
+.stat-card.red-c .lbl{color:#b91c1c;}
+.stat-card.red-c .val{color:#b91c1c;}
+.stat-card.blue-c{background:#fff;border:1px solid var(--blue-border);}
+.stat-card.blue-c .lbl{color:var(--color-accent-dark);}
+.stat-card.blue-c .val{color:var(--color-accent-dark);}
+.stat-card.green-c{background:#fff;border:1px solid var(--green-border);}
+.stat-card.green-c .lbl{color:#166534;}
+.stat-card.green-c .val{color:#166534;}
+
+.toolbar2{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.btn{border:none;border-radius:7px;padding:9px 14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.btn-add{background:#dcfce7;color:#166534;}
+.btn-add:hover{background:#bbf7d0;}
+.btn-del{background:#fee2e2;color:#b91c1c;}
+.btn-del:hover{background:#fecaca;}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;}
+.tab{padding:9px 14px;font-size:13px;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--text-main);}
+.tab.active{color:var(--color-accent-dark);border-bottom-color:var(--color-accent);}
+
+.task-list-wrap{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.task-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #f3f4f6;}
+.task-row:last-child{border-bottom:none;}
+.task-row.status-red{background:#fef2f2;}
+.task-row.status-blue{background:#eff6ff;}
+.task-row.status-green{background:#f0fdf4;}
+.task-checkbox{width:15px;height:15px;flex-shrink:0;}
+.task-star{font-size:14px;cursor:pointer;flex-shrink:0;color:#d1d5db;}
+.task-star.active{color:#fbbf24;}
+.task-num{font-size:11px;color:var(--text-muted);font-weight:600;width:28px;flex-shrink:0;}
+.task-body{flex:1;min-width:0;}
+.task-text{font-size:13.5px;font-weight:500;}
+.task-meta{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.status-buttons{display:flex;gap:5px;flex-shrink:0;}
+.status-btn{border:1px solid var(--border);background:#fff;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text-muted);}
+.status-btn.sel-red{background:var(--red);color:#fff;border-color:var(--red);}
+.status-btn.sel-blue{background:var(--blue);color:#fff;border-color:var(--blue);}
+.status-btn.sel-green{background:var(--green);color:#fff;border-color:var(--green);}
+
+/* All Task table view (admin global) */
+.alltask-group{margin-bottom:18px;}
+.alltask-group-head{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--text-muted);margin-bottom:8px;padding-left:2px;}
+.alltask-group-head .emoji{font-size:14px;}
+.alltask-group-head .owner{font-weight:500;color:#9ca3af;}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.empty-state .big-emoji{font-size:40px;margin-bottom:12px;}
+.empty-state .et{font-weight:600;color:var(--text-main);margin-bottom:5px;font-size:14.5px;}
+
+/* ===== MODALS ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:center;justify-content:center;z-index:150;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:12px;width:480px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.18);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);}
+.modal-head h3{margin:0;font-size:15.5px;font-weight:700;}
+.modal-close{border:none;background:none;font-size:18px;color:var(--text-muted);cursor:pointer;}
+.modal-body{padding:20px 22px;}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--border);}
+.btn-cancel{background:#fff;border:1px solid var(--border);border-radius:7px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--text-main);}
+.btn-confirm{background:var(--color-accent);border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:600;color:#fff;}
+.btn-confirm:hover{background:var(--color-accent-dark);}
+.field-mini{margin-bottom:14px;}
+.field-mini label{display:block;font-size:12px;font-weight:600;color:var(--text-main);margin-bottom:6px;}
+.field-mini input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13.5px;}
+.field-hint{font-size:11.5px;color:var(--text-muted);margin-top:5px;}
+.assignee-chip-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;min-height:20px;}
+.assignee-chip{display:flex;align-items:center;gap:6px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;color:var(--color-accent-dark);font-weight:600;}
+.assignee-chip button{border:none;background:none;color:var(--color-accent-dark);font-size:13px;padding:0 4px;cursor:pointer;}
+.add-assignee-row{display:flex;gap:8px;}
+.add-assignee-row input{flex:1;}
+.btn-small{background:var(--bg-page);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12.5px;font-weight:600;color:var(--text-main);}
+.btn-small:hover{background:#e5e7eb;}
+.suggest-box{margin-top:6px;border:1px solid var(--border);border-radius:6px;background:#fff;max-height:120px;overflow-y:auto;}
+.suggest-item{padding:8px 11px;font-size:12.5px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.suggest-item:hover{background:var(--bg-page);}
+.mini-avatar{width:22px;height:22px;border-radius:50%;background:var(--color-accent);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.admin-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #f3f4f6;}
+.admin-toggle-row:last-child{border-bottom:none;}
+.member-mini{display:flex;align-items:center;gap:9px;}
+.switch{position:relative;width:38px;height:21px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:21px;transition:.2s;}
+.slider::before{content:"";position:absolute;width:16px;height:16px;left:3px;top:2.5px;background:#fff;border-radius:50%;transition:.2s;}
+.switch input:checked + .slider{background:var(--color-accent);}
+.switch input:checked + .slider::before{transform:translateX(16px);}
+
+.toast{position:fixed;bottom:24px;right:24px;background:#111827;color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:300;opacity:0;transform:translateY(8px);transition:.25s;display:flex;align-items:center;gap:8px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media (max-width:880px){
+  .layout{flex-direction:column;}
+  .sidebar{
+    width:100%;display:none;min-height:0;
+    position:fixed;top:0;left:0;right:0;bottom:0;z-index:90;overflow-y:auto;
+  }
+  .sidebar.open{display:flex;}
+  .mobile-menu-btn{display:block;}
+  .main{padding:16px;max-width:100%;}
+  .stat-cards{grid-template-columns:1fr;}
+  .task-row{flex-wrap:wrap;}
+  .status-buttons{margin-left:33px;}
+  .modal-box{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ AUTH ============ -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="sq">L</div>
+      <div class="auth-title">LISTES</div>
+    </div>
+    <div class="auth-sub">listes.sasfr.com — Connectez-vous pour accéder à vos listes</div>
+    <div class="lang-toggle"><button class="active">FR</button><button>中文</button></div>
+    <div class="field"><label>Email</label><input type="email" id="login-email" value="michel@sasfr.com"></div>
+    <div class="field"><label>Mot de passe</label>
+      <div class="pw-wrap"><input type="password" id="login-pw" value="demo1234"><button onclick="togglePw('login-pw')">👁️</button></div>
+    </div>
+    <div class="row-between">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" checked style="width:auto;"> Se souvenir de moi</label>
+      <a href="#">Mot de passe oublié ?</a>
+    </div>
+    <button class="btn-primary" onclick="loginAs('admin')">Se connecter (démo Admin)</button>
+    <button class="btn-primary" style="background:#fff;color:var(--color-accent-dark);border:1px solid var(--blue-border);" onclick="loginAs('member')">Se connecter (démo Membre)</button>
+    <div class="divider">ou</div>
+    <button class="btn-google" onclick="loginAs('admin')">🔵 Se connecter avec Google</button>
+    <div class="auth-foot">Pas de compte ? <a href="#">S'inscrire</a></div>
+    <div class="demo-note">🧪 <b>Maquette de démonstration</b> — utilisez les boutons "démo" pour tester Admin et Membre.</div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="brand"><div class="sq">L</div><div class="brand-text">Listes<span class="accent">Client</span></div></div>
+        <button class="gestion-btn" onclick="toast('Ouvre la page de gestion globale des listes (démo)')">⚙️ Gestion listes</button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <div id="all-task-slot"></div>
+
+        <div class="sb-section-title">Mes listes</div>
+        <div id="sb-mylists"></div>
+
+        <div class="sb-section-title">Listes partagées avec moi</div>
+        <div id="sb-shared"></div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="attribuer-title">Attribuer</div>
+        <div class="attribuer-target" id="attribuer-target"><span class="emoji">📋</span> <b>Sélectionnez une liste</b></div>
+        <div class="attribuer-chips" id="attribuer-chips"></div>
+        <div class="attribuer-row">
+          <input type="text" id="attribuer-input" placeholder="collaborateur@exemple.com" oninput="filterAttribuerSuggest()">
+        </div>
+        <div class="suggest-box" id="attribuer-suggest" style="display:none;"></div>
+        <button class="btn-attribuer" onclick="attribuerFromSidebar()">👤 Attribuer</button>
+        <div class="attribuer-hint">🔑 Multi-attribution possible.</div>
+      </div>
+
+      <div class="user-footer">
+        <div class="user-footer-left">
+          <div class="avatar" id="user-avatar">MI</div>
+          <div>
+            <div class="user-footer-name" id="user-footer-name">michel@sasfr.com</div>
+            <div class="user-footer-role" id="user-footer-role">Admin</div>
+          </div>
+        </div>
+        <div class="user-footer-right">
+          <div class="lang-mini"><button class="active">FR</button><button>中文</button></div>
+          <button class="btn-quit" onclick="logout()">⎋ Quitter</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+
+      <!-- VIEW: single list opened -->
+      <div id="view-single-list">
+        <div class="main-header-row">
+          <div class="main-title-block">
+            <span class="emoji-big" id="sl-emoji">📋</span>
+            <div class="main-title-text">
+              <h1 id="sl-name">Nom de la liste</h1>
+              <div class="sub" id="sl-sub">Créée par —</div>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-pill gerer" id="sl-gerer-btn" onclick="openManageFromHeader()">👥 Gérer</button>
+            <button class="btn-pill excel" onclick="toast('Export Excel généré (démo)')">📈 Excel</button>
+            <button class="btn-pill pdf" onclick="toast('Export PDF généré (démo)')">📥 PDF</button>
+          </div>
+        </div>
+
+        <div class="stat-cards">
+          <div class="stat-card main"><div class="lbl">Total tâches</div><div class="val" id="sl-total">0</div></div>
+          <div class="stat-card red-c"><div class="lbl">🔴 Non exécuté</div><div class="val" id="sl-red">0</div></div>
+          <div class="stat-card blue-c"><div class="lbl">🔵 En cours</div><div class="val" id="sl-blue">0</div></div>
+        </div>
+
+        <div class="toolbar2">
+          <button class="btn btn-add" onclick="openAddTask()">+ Ajouter une tâche</button>
+          <button class="btn btn-del" onclick="toggleDeleteMode()" id="del-btn">🗑️ Supprimer</button>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" data-filter="all" onclick="setFilter('all')">📋 Toutes</div>
+          <div class="tab" data-filter="todo" onclick="setFilter('todo')">📱 À traiter</div>
+          <div class="tab" data-filter="inprogress" onclick="setFilter('inprogress')">⚡ En cours</div>
+          <div class="tab" data-filter="done" onclick="setFilter('done')">✅ Fait</div>
+          <div class="tab" data-filter="fav" onclick="setFilter('fav')">⭐ Favoris</div>
+          <div class="tab" data-filter="archive" onclick="setFilter('archive')">🗑️ Archives</div>
+        </div>
+
+        <div class="task-list-wrap" id="task-list-wrap"></div>
+      </div>
+
+      <!-- VIEW: All Task (admin global) -->
+      <div id="view-all-task" style="display:none;">
+        <div class="main-header-row">
+          <div class="main-title-block">
+            <span class="emoji-big">🌐</span>
+            <div class="main-title-text"><h1>Toutes les listes</h1><div class="sub">Vue globale admin · toutes les listes, tous créateurs</div></div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-pill" onclick="openCreateListModal()">+ Nouvelle liste</button>
+            <button class="btn-pill excel" onclick="toast('Export Excel global généré (démo)')">📈 Excel</button>
+            <button class="btn-pill pdf" onclick="toast('Export PDF global généré (démo)')">📥 PDF</button>
+          </div>
+        </div>
+        <div class="stat-cards">
+          <div class="stat-card main"><div class="lbl">Listes au total</div><div class="val" id="at-total-lists">0</div></div>
+          <div class="stat-card red-c"><div class="lbl">🔴 Non exécuté</div><div class="val" id="at-red">0</div></div>
+          <div class="stat-card blue-c"><div class="lbl">🔵 En cours</div><div class="val" id="at-blue">0</div></div>
+        </div>
+        <div class="tabs">
+          <div class="tab active" data-atfilter="all" onclick="setAtFilter('all')">📋 Toutes</div>
+          <div class="tab" data-atfilter="todo" onclick="setAtFilter('todo')">📱 À traiter</div>
+          <div class="tab" data-atfilter="inprogress" onclick="setAtFilter('inprogress')">⚡ En cours</div>
+          <div class="tab" data-atfilter="done" onclick="setAtFilter('done')">✅ Fait</div>
+          <div class="tab" data-atfilter="fav" onclick="setAtFilter('fav')">⭐ Favoris</div>
+          <div class="tab" data-atfilter="archive" onclick="setAtFilter('archive')">🗑️ Archives</div>
+        </div>
+        <div id="all-task-groups"></div>
+      </div>
+
+      <!-- VIEW: empty / no list selected -->
+      <div id="view-empty" style="display:none;">
+        <div class="empty-state">
+          <div class="big-emoji">🗂️</div>
+          <div class="et">Aucune liste sélectionnée</div>
+          <div>Choisissez une liste dans la barre latérale, ou créez-en une nouvelle.</div>
+          <button class="btn btn-add" style="margin:18px auto 0;" onclick="openCreateListModal()">+ Nouvelle liste</button>
+        </div>
+      </div>
+
+      <!-- VIEW: members management -->
+      <div id="view-members" style="display:none;">
+        <div class="main-header-row">
+          <div class="main-title-block"><span class="emoji-big">👥</span><div class="main-title-text"><h1>Gérer les membres</h1><div class="sub">Attribuer le rôle admin</div></div></div>
+        </div>
+        <div class="task-list-wrap" id="members-table"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Créer une liste ===== -->
+<div class="modal-overlay" id="modal-create-list">
+  <div class="modal-box">
+    <div class="modal-head"><h3>+ Nouvelle liste</h3><button class="modal-close" onclick="closeModal('modal-create-list')">✕</button></div>
+    <div class="modal-body">
+      <div class="field-mini"><label>Nom de la liste *</label><input type="text" id="new-list-name" placeholder="Ex: Chantier Bussy — Électricité"></div>
+      <div class="field-mini"><label>Emoji (optionnel)</label><input type="text" id="new-list-emoji" maxlength="2" value="📋"></div>
+      <div class="field-mini">
+        <label>Assigner à (par email, plusieurs possibles)</label>
+        <div class="add-assignee-row">
+          <input type="text" id="assignee-input" placeholder="email@sasfr.com" oninput="filterSuggestions()">
+          <button class="btn-small" onclick="addAssigneeFromInput()">Ajouter</button>
+        </div>
+        <div class="suggest-box" id="suggest-box" style="display:none;"></div>
+        <div class="assignee-chip-list" id="new-list-assignees"></div>
+        <div class="field-hint">Cette liste apparaîtra dans "Mes listes" pour vous, et dans "Listes partagées avec moi" pour les personnes assignées.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-create-list')">Annuler</button>
+      <button class="btn-confirm" onclick="createList()">Créer la liste</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Gérer une liste ===== -->
+<div class="modal-overlay" id="modal-manage-list">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="manage-list-title">Gérer la liste</h3><button class="modal-close" onclick="closeModal('modal-manage-list')">✕</button></div>
+    <div class="modal-body">
+      <div class="field-mini">
+        <label>Personnes assignées</label>
+        <div class="add-assignee-row">
+          <input type="text" id="manage-assignee-input" placeholder="email@sasfr.com" oninput="filterSuggestionsManage()">
+          <button class="btn-small" onclick="addAssigneeFromManage()">Ajouter</button>
+        </div>
+        <div class="suggest-box" id="suggest-box-manage" style="display:none;"></div>
+        <div class="assignee-chip-list" id="manage-list-assignees"></div>
+        <div class="field-hint">Ajoutez ou retirez librement. Le créateur reste toujours sur la liste.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-manage-list')">Fermer</button>
+      <button class="btn-confirm" onclick="saveManageList()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Ajouter tâche ===== -->
+<div class="modal-overlay" id="modal-add-task">
+  <div class="modal-box">
+    <div class="modal-head"><h3>+ Ajouter une tâche</h3><button class="modal-close" onclick="closeModal('modal-add-task')">✕</button></div>
+    <div class="modal-body"><div class="field-mini"><label>Texte de la tâche *</label><input type="text" id="new-task-text" placeholder="Ex: Commander 2 vasques"></div></div>
+    <div class="modal-foot"><button class="btn-cancel" onclick="closeModal('modal-add-task')">Annuler</button><button class="btn-confirm" onclick="confirmAddTask()">Ajouter</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== DEMO DATA ===================== */
+const MEMBERS = [
+  {email:'michel@sasfr.com', name:'Michel Chen', initials:'MI', admin:true},
+  {email:'dimitri@sasfr.com', name:'Dimitri Laupeze', initials:'DL', admin:false},
+  {email:'anne@sasfr.com', name:'Anne N.', initials:'AN', admin:false},
+  {email:'vanessa@sasfr.com', name:'Vanessa O.', initials:'VO', admin:false},
+];
+
+let currentUser = null;
+let deleteMode = false;
+let activeFilter = 'all';
+let activeAtFilter = 'all';
+let selectedListId = null; // null = nothing selected
+let viewingAllTask = false;
+let manageListId = null;
+let pendingAddTaskListId = null;
+
+let LISTS = [
+  { id:1, emoji:'📦', name:'Bridge WhatsApp — Maintenance', createdBy:'michel@sasfr.com', assignees:['dimitri@sasfr.com'],
+    tasks:[
+      {id:101,text:'SAV LAPEYRE REMBOURSEMENT',status:'red',fav:true,archived:false,meta:'Michel · 27/05/2026'},
+      {id:102,text:'TEST01',status:'red',fav:false,archived:false,meta:'Michel · 09/06/2026'},
+      {id:103,text:'23 TOUL - 2 vasques à commander',status:'blue',fav:false,archived:false,meta:'Michel · 16/06/2026'},
+      {id:104,text:'Relancer fournisseur Somfy',status:'green',fav:false,archived:false,meta:'Dimitri · 12/06/2026'},
+    ]},
+  { id:2, emoji:'🏗️', name:'Chantier DM77 — Fontainebleau', createdBy:'michel@sasfr.com', assignees:['anne@sasfr.com','vanessa@sasfr.com'],
+    tasks:[
+      {id:201,text:'Mise à jour dimensions caisse en bois (木箱尺寸)',status:'red',fav:false,archived:false,meta:'WhatsApp · 24/05/2026'},
+      {id:202,text:'Appeler Airbnb — réservation logement',status:'green',fav:false,archived:false,meta:'WhatsApp · 24/05/2026'},
+    ]},
+  { id:3, emoji:'🧾', name:'Admin — CERFA & devis', createdBy:'dimitri@sasfr.com', assignees:['michel@sasfr.com'],
+    tasks:[
+      {id:301,text:'CERFA 14024-01 voirie',status:'blue',fav:true,archived:false,meta:'Dimitri · 10/06/2026'},
+      {id:302,text:'Devis kitchen électrique triphasé',status:'red',fav:false,archived:false,meta:'Dimitri · 14/06/2026'},
+    ]},
+  { id:4, emoji:'🛠️', name:'Suivi Somfy — paiement', createdBy:'anne@sasfr.com', assignees:[],
+    tasks:[
+      {id:401,text:'Relancer le devis moteur',status:'red',fav:false,archived:false,meta:'Anne · 15/06/2026'},
+    ]},
+];
+let nextListId = 5, nextTaskId = 501;
+
+/* ===================== AUTH ===================== */
+function togglePw(id){const el=document.getElementById(id);el.type=el.type==='password'?'text':'password';}
+
+function loginAs(role){
+  currentUser = role === 'admin' ? MEMBERS[0] : MEMBERS[1];
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-avatar').textContent = currentUser.initials;
+  document.getElementById('user-footer-name').textContent = currentUser.email;
+  document.getElementById('user-footer-role').textContent = currentUser.admin ? 'Admin' : 'Membre';
+  selectedListId = null;
+  viewingAllTask = false;
+  renderSidebar();
+  renderMain();
+}
+function logout(){currentUser=null;document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='flex';}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+
+/* ===================== SIDEBAR RENDER ===================== */
+function renderSidebar(){
+  // All Task slot — admin only, pinned at very top
+  const slot = document.getElementById('all-task-slot');
+  if(currentUser.admin){
+    const totalRed = LISTS.reduce((s,l)=>s+l.tasks.filter(t=>!t.archived&&t.status==='red').length,0);
+    slot.innerHTML = `<div class="all-task-item ${viewingAllTask?'active':''}" onclick="selectAllTask()">🌐 Toutes les listes <span class="count">${totalRed}</span></div>`;
+  } else {
+    slot.innerHTML = '';
+  }
+
+  const myLists = LISTS.filter(l=>l.createdBy===currentUser.email);
+  const sharedLists = LISTS.filter(l=>l.createdBy!==currentUser.email && l.assignees.includes(currentUser.email));
+
+  const renderItem = (l) => {
+    const redCount = l.tasks.filter(t=>!t.archived && t.status==='red').length;
+    const badge = redCount>0 ? `<span class="badge red">${redCount}</span>` : '';
+    return `<div class="list-item ${(!viewingAllTask && selectedListId===l.id)?'active':''}" onclick="selectList(${l.id})">
+      <span class="emoji">${l.emoji}</span><span class="name">${l.name}</span>${badge}
+    </div>`;
+  };
+
+  document.getElementById('sb-mylists').innerHTML = myLists.length
+    ? myLists.map(renderItem).join('')
+    : '<div class="sb-empty">Aucune liste créée</div>';
+
+  document.getElementById('sb-shared').innerHTML = sharedLists.length
+    ? sharedLists.map(renderItem).join('')
+    : '<div class="sb-empty">Aucune liste partagée</div>';
+}
+
+function selectList(id){
+  selectedListId = id;
+  viewingAllTask = false;
+  activeFilter = 'all';
+  deleteMode = false;
+  document.getElementById('sidebar').classList.remove('open');
+  renderSidebar();
+  renderMain();
+}
+function selectAllTask(){
+  viewingAllTask = true;
+  selectedListId = null;
+  document.getElementById('sidebar').classList.remove('open');
+  renderSidebar();
+  renderMain();
+}
+
+/* ===================== MAIN VIEW SWITCH ===================== */
+function renderMain(){
+  document.getElementById('view-single-list').style.display='none';
+  document.getElementById('view-all-task').style.display='none';
+  document.getElementById('view-empty').style.display='none';
+  document.getElementById('view-members').style.display='none';
+
+  if(viewingAllTask && currentUser.admin){
+    document.getElementById('view-all-task').style.display='block';
+    renderAllTask();
+    renderAttribuerSidebarTarget();
+    return;
+  }
+  if(selectedListId){
+    const list = findList(selectedListId);
+    if(list){
+      document.getElementById('view-single-list').style.display='block';
+      renderSingleList(list);
+      renderAttribuerSidebarTarget();
+      return;
+    }
+  }
+  document.getElementById('view-empty').style.display='block';
+  renderAttribuerSidebarTarget();
+}
+
+function findList(id){return LISTS.find(l=>l.id===id);}
+function findTask(listId,taskId){return findList(listId).tasks.find(t=>t.id===taskId);}
+
+function taskMatchesFilter(t, filter){
+  filter = filter || activeFilter;
+  if(t.archived) return filter==='archive';
+  if(filter==='archive') return false;
+  if(filter==='all') return true;
+  if(filter==='fav') return t.fav;
+  if(filter==='todo') return t.status==='red';
+  if(filter==='inprogress') return t.status==='blue';
+  if(filter==='done') return t.status==='green';
+  return true;
+}
+
+/* ===================== SINGLE LIST VIEW ===================== */
+function renderSingleList(list){
+  document.getElementById('sl-emoji').textContent = list.emoji;
+  document.getElementById('sl-name').textContent = list.name;
+  const owner = MEMBERS.find(m=>m.email===list.createdBy);
+  document.getElementById('sl-sub').textContent = 'Créée par ' + (owner?owner.name:list.createdBy) + (list.assignees.length? ' · Assignée à '+list.assignees.length+' personne(s)' : '');
+
+  const canManage = list.createdBy===currentUser.email || currentUser.admin;
+  document.getElementById('sl-gerer-btn').style.display = canManage ? 'flex' : 'none';
+
+  const active = list.tasks.filter(t=>!t.archived);
+  document.getElementById('sl-total').textContent = active.length;
+  document.getElementById('sl-red').textContent = active.filter(t=>t.status==='red').length;
+  document.getElementById('sl-blue').textContent = active.filter(t=>t.status==='blue').length;
+
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.toggle('active', t.dataset.filter===activeFilter));
+
+  const tasks = list.tasks.filter(taskMatchesFilter);
+  const wrap = document.getElementById('task-list-wrap');
+  if(tasks.length===0){
+    wrap.innerHTML = `<div class="empty-state"><div class="big-emoji">✅</div><div class="et">Rien ici</div><div>Aucune tâche dans ce filtre.</div></div>`;
+    return;
+  }
+  wrap.innerHTML = tasks.map((t,idx)=>`
+    <div class="task-row status-${t.status}">
+      ${deleteMode?`<input type="checkbox" class="task-checkbox" data-task="${t.id}">`:''}
+      <span class="task-star ${t.fav?'active':''}" onclick="toggleFav(${list.id},${t.id})">★</span>
+      <span class="task-num">#${String(idx+1).padStart(2,'0')}</span>
+      <div class="task-body"><div class="task-text">${t.text}</div><div class="task-meta">${t.meta}</div></div>
+      <div class="status-buttons">
+        <button class="status-btn ${t.status==='blue'?'sel-blue':''}" onclick="setStatus(${list.id},${t.id},'blue')">En cours</button>
+        <button class="status-btn ${t.status==='green'?'sel-green':''}" onclick="setStatus(${list.id},${t.id},'green')">Fait</button>
+        <button class="status-btn ${t.status==='red'?'sel-red':''}" onclick="setStatus(${list.id},${t.id},'red')">Non exécuté</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(f){activeFilter=f;deleteMode=false;renderMain();}
+function setStatus(listId,taskId,status){findTask(listId,taskId).status=status;renderSidebar();renderMain();}
+function toggleFav(listId,taskId){findTask(listId,taskId).fav=!findTask(listId,taskId).fav;renderMain();}
+
+function openAddTask(){
+  pendingAddTaskListId = selectedListId;
+  openModal('modal-add-task');
+  document.getElementById('new-task-text').value='';
+}
+function confirmAddTask(){
+  const text=document.getElementById('new-task-text').value.trim();
+  if(!text){toast('Texte requis');return;}
+  const targetListId = pendingAddTaskListId || selectedListId;
+  if(!targetListId){toast('Aucune liste cible');return;}
+  findList(targetListId).tasks.push({id:nextTaskId++,text,status:'red',fav:false,archived:false,meta:currentUser.name+" · à l'instant"});
+  closeModal('modal-add-task');
+  pendingAddTaskListId = null;
+  renderSidebar();
+  if(viewingAllTask){ renderAllTask(); } else { renderMain(); }
+  toast('Tâche ajoutée');
+}
+function toggleDeleteMode(){
+  deleteMode=!deleteMode;
+  if(!deleteMode){
+    document.querySelectorAll('.task-checkbox:checked').forEach(cb=>{
+      const list=findList(selectedListId);
+      list.tasks=list.tasks.filter(t=>t.id!==parseInt(cb.dataset.task));
+    });
+    renderSidebar();
+  }
+  renderMain();
+  toast(deleteMode?'Sélectionnez les tâches puis recliquez sur Supprimer':'Suppression effectuée');
+}
+
+/* ===================== ALL TASK VIEW (admin) ===================== */
+function setAtFilter(f){
+  activeAtFilter = f;
+  document.querySelectorAll('#view-all-task .tabs .tab').forEach(t=>t.classList.toggle('active', t.dataset.atfilter===f));
+  renderAllTask();
+}
+
+function renderAllTask(){
+  document.querySelectorAll('#view-all-task .tabs .tab').forEach(t=>t.classList.toggle('active', t.dataset.atfilter===activeAtFilter));
+
+  document.getElementById('at-total-lists').textContent = LISTS.length;
+  let red=0,blue=0;
+  LISTS.forEach(l=>l.tasks.forEach(t=>{if(!t.archived){if(t.status==='red')red++;if(t.status==='blue')blue++;}}));
+  document.getElementById('at-red').textContent=red;
+  document.getElementById('at-blue').textContent=blue;
+
+  const c = document.getElementById('all-task-groups');
+  c.innerHTML = LISTS.map(l=>{
+    const owner = MEMBERS.find(m=>m.email===l.createdBy);
+    const filtered = l.tasks.filter(t=>taskMatchesFilter(t, activeAtFilter));
+    return `<div class="alltask-group">
+      <div class="alltask-group-head"><span class="emoji">${l.emoji}</span> ${l.name} <span class="owner">— créée par ${owner?owner.name:l.createdBy} · ${filtered.length} tâche(s)</span>
+        <button class="btn-small" onclick="openAddTaskFor(${l.id})">+ Tâche</button>
+        <button class="btn-small" onclick="selectList(${l.id})">Ouvrir →</button>
+      </div>
+      <div class="task-list-wrap">
+        ${filtered.length===0 ? '<div style="padding:14px 16px;color:var(--text-muted);font-size:12.5px;">Aucune tâche dans ce filtre.</div>' :
+          filtered.map((t,idx)=>`
+          <div class="task-row status-${t.status}">
+            <span class="task-star ${t.fav?'active':''}" onclick="toggleFav(${l.id},${t.id});renderAllTask();">★</span>
+            <span class="task-num">#${String(idx+1).padStart(2,'0')}</span>
+            <div class="task-body"><div class="task-text">${t.text}</div><div class="task-meta">${t.meta}</div></div>
+            <div class="status-buttons">
+              <button class="status-btn ${t.status==='blue'?'sel-blue':''}" onclick="setStatus(${l.id},${t.id},'blue');renderAllTask();">En cours</button>
+              <button class="status-btn ${t.status==='green'?'sel-green':''}" onclick="setStatus(${l.id},${t.id},'green');renderAllTask();">Fait</button>
+              <button class="status-btn ${t.status==='red'?'sel-red':''}" onclick="setStatus(${l.id},${t.id},'red');renderAllTask();">Non exécuté</button>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAddTaskFor(listId){
+  pendingAddTaskListId = listId;
+  document.getElementById('new-task-text').value='';
+  openModal('modal-add-task');
+}
+
+/* ===================== ATTRIBUER (sidebar bottom, applies to selected list) ===================== */
+function renderAttribuerSidebarTarget(){
+  const target = document.getElementById('attribuer-target');
+  const chips = document.getElementById('attribuer-chips');
+  if(!selectedListId || viewingAllTask){
+    target.innerHTML = `<span class="emoji">📋</span> <b>Sélectionnez une liste</b>`;
+    chips.innerHTML='';
+    return;
+  }
+  const list = findList(selectedListId);
+  target.innerHTML = `<span class="emoji">${list.emoji}</span> <b>${list.name}</b>`;
+  chips.innerHTML = list.assignees.map(email=>{
+    const m=MEMBERS.find(m=>m.email===email);
+    return `<div class="mini-chip">${m?m.name:email}<button onclick="removeAssigneeDirect(${list.id},'${email}')">✕</button></div>`;
+  }).join('');
+}
+function removeAssigneeDirect(listId,email){
+  const list=findList(listId);
+  list.assignees=list.assignees.filter(e=>e!==email);
+  renderSidebar();renderMain();
+  toast('Attribution retirée');
+}
+function filterAttribuerSuggest(){
+  const val=document.getElementById('attribuer-input').value.toLowerCase();
+  const box=document.getElementById('attribuer-suggest');
+  if(!val||!selectedListId){box.style.display='none';return;}
+  const list=findList(selectedListId);
+  const matches=MEMBERS.filter(m=>m.email.toLowerCase().includes(val)&&!list.assignees.includes(m.email)&&m.email!==list.createdBy);
+  if(matches.length===0){box.style.display='none';return;}
+  box.innerHTML=matches.map(m=>`<div class="suggest-item" onclick="document.getElementById('attribuer-input').value='${m.email}';document.getElementById('attribuer-suggest').style.display='none';"><span class="mini-avatar">${m.initials}</span> ${m.name}</div>`).join('');
+  box.style.display='block';
+}
+function attribuerFromSidebar(){
+  if(!selectedListId){toast("Sélectionnez une liste d'abord");return;}
+  const val=document.getElementById('attribuer-input').value.trim().toLowerCase();
+  if(!val)return;
+  const list=findList(selectedListId);
+  if(!list.assignees.includes(val))list.assignees.push(val);
+  document.getElementById('attribuer-input').value='';
+  document.getElementById('attribuer-suggest').style.display='none';
+  renderSidebar();renderMain();
+  toast('Liste attribuée');
+}
+
+/* ===================== CREATE LIST MODAL ===================== */
+let newListAssignees=[];
+function openCreateListModal(){
+  document.getElementById('new-list-name').value='';
+  document.getElementById('new-list-emoji').value='📋';
+  newListAssignees=[];
+  renderChips('new-list-assignees',newListAssignees,removeNewAssignee);
+  openModal('modal-create-list');
+}
+function filterSuggestions(){
+  const val=document.getElementById('assignee-input').value.toLowerCase();
+  const box=document.getElementById('suggest-box');
+  if(!val){box.style.display='none';return;}
+  const matches=MEMBERS.filter(m=>m.email.toLowerCase().includes(val)&&!newListAssignees.includes(m.email)&&m.email!==currentUser.email);
+  if(matches.length===0){box.style.display='none';return;}
+  box.innerHTML=matches.map(m=>`<div class="suggest-item" onclick="pickSuggestion('${m.email}')"><span class="mini-avatar">${m.initials}</span> ${m.name} — ${m.email}</div>`).join('');
+  box.style.display='block';
+}
+function pickSuggestion(email){document.getElementById('assignee-input').value=email;document.getElementById('suggest-box').style.display='none';}
+function addAssigneeFromInput(){
+  const val=document.getElementById('assignee-input').value.trim().toLowerCase();
+  if(!val)return;
+  if(!newListAssignees.includes(val))newListAssignees.push(val);
+  document.getElementById('assignee-input').value='';
+  document.getElementById('suggest-box').style.display='none';
+  renderChips('new-list-assignees',newListAssignees,removeNewAssignee);
+}
+function removeNewAssignee(email){newListAssignees=newListAssignees.filter(e=>e!==email);renderChips('new-list-assignees',newListAssignees,removeNewAssignee);}
+function renderChips(containerId,arr,removeFn){
+  document.getElementById(containerId).innerHTML=arr.map(email=>{
+    const m=MEMBERS.find(m=>m.email===email);
+    return `<div class="assignee-chip">${m?m.name:email}<button onclick="${removeFn.name}('${email}')">✕</button></div>`;
+  }).join('');
+}
+function createList(){
+  const name=document.getElementById('new-list-name').value.trim();
+  if(!name){toast('Nom de liste requis');return;}
+  const emoji=document.getElementById('new-list-emoji').value.trim()||'📋';
+  const newL={id:nextListId++,emoji,name,createdBy:currentUser.email,assignees:[...newListAssignees],tasks:[]};
+  LISTS.push(newL);
+  closeModal('modal-create-list');
+  viewingAllTask=false;
+  selectList(newL.id);
+  toast('Liste créée');
+}
+
+/* ===================== MANAGE LIST MODAL ===================== */
+let manageAssignees=[];
+function openManageFromHeader(){openManageList(selectedListId);}
+function openManageList(listId){
+  manageListId=listId;
+  const list=findList(listId);
+  document.getElementById('manage-list-title').textContent='Gérer — '+list.name;
+  manageAssignees=[...list.assignees];
+  renderChips('manage-list-assignees',manageAssignees,removeManageAssignee);
+  openModal('modal-manage-list');
+}
+function filterSuggestionsManage(){
+  const val=document.getElementById('manage-assignee-input').value.toLowerCase();
+  const box=document.getElementById('suggest-box-manage');
+  if(!val){box.style.display='none';return;}
+  const list=findList(manageListId);
+  const matches=MEMBERS.filter(m=>m.email.toLowerCase().includes(val)&&!manageAssignees.includes(m.email)&&m.email!==list.createdBy);
+  if(matches.length===0){box.style.display='none';return;}
+  box.innerHTML=matches.map(m=>`<div class="suggest-item" onclick="pickSuggestionManage('${m.email}')"><span class="mini-avatar">${m.initials}</span> ${m.name} — ${m.email}</div>`).join('');
+  box.style.display='block';
+}
+function pickSuggestionManage(email){document.getElementById('manage-assignee-input').value=email;document.getElementById('suggest-box-manage').style.display='none';}
+function addAssigneeFromManage(){
+  const val=document.getElementById('manage-assignee-input').value.trim().toLowerCase();
+  if(!val)return;
+  if(!manageAssignees.includes(val))manageAssignees.push(val);
+  document.getElementById('manage-assignee-input').value='';
+  document.getElementById('suggest-box-manage').style.display='none';
+  renderChips('manage-list-assignees',manageAssignees,removeManageAssignee);
+}
+function removeManageAssignee(email){manageAssignees=manageAssignees.filter(e=>e!==email);renderChips('manage-list-assignees',manageAssignees,removeManageAssignee);}
+function saveManageList(){
+  findList(manageListId).assignees=[...manageAssignees];
+  closeModal('modal-manage-list');
+  renderSidebar();renderMain();
+  toast('Assignations mises à jour');
+}
+
+/* ===================== MEMBERS ADMIN TOGGLE (accessible via gestion) ===================== */
+function renderMembersView(){
+  document.getElementById('members-table').innerHTML = MEMBERS.map((m,i)=>`
+    <div class="admin-toggle-row">
+      <div class="member-mini"><div class="mini-avatar">${m.initials}</div>
+        <div><div style="font-weight:600;font-size:13px;">${m.name}</div><div style="font-size:11.5px;color:var(--text-muted);">${m.email}</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:11.5px;color:var(--text-muted);">Admin</span>
+        <label class="switch"><input type="checkbox" ${m.admin?'checked':''} onchange="toggleAdmin(${i})"><span class="slider"></span></label>
+      </div>
+    </div>`).join('');
+}
+function toggleAdmin(idx){
+  MEMBERS[idx].admin=!MEMBERS[idx].admin;
+  if(currentUser.email===MEMBERS[idx].email){currentUser.admin=MEMBERS[idx].admin;document.getElementById('user-footer-role').textContent=currentUser.admin?'Admin':'Membre';}
+  renderSidebar();
+  toast(MEMBERS[idx].name+(MEMBERS[idx].admin?' est maintenant admin':" n'est plus admin"));
+}
+
+/* ===================== MODAL HELPERS / TOAST ===================== */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+let toastTimer=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+</script>
+</body>
+</html>

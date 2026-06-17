@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LISTES — listes.sasfr.com</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>📋</text></svg>">
+<style>
+:root{
+  --bg-page:#f3f4f6;
+  --bg-card:#ffffff;
+  --bg-sidebar:#ffffff;
+  --border:#e5e7eb;
+  --text-main:#111827;
+  --text-muted:#6b7280;
+  --color-accent:#3b82f6;
+  --color-accent-dark:#2563eb;
+  --red:#ef4444;
+  --red-bg:#fef2f2;
+  --red-border:#fecaca;
+  --blue:#3b82f6;
+  --blue-bg:#eff6ff;
+  --blue-border:#bfdbfe;
+  --green:#16a34a;
+  --green-bg:#f0fdf4;
+  --green-border:#86efac;
+  --amber:#d97706;
+  --amber-bg:#fffbeb;
+  --amber-border:#fde68a;
+  --radius:8px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Inter',"Segoe UI",Roboto,sans-serif;background:var(--bg-page);color:var(--text-main);font-size:14px;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+
+/* ===== AUTH ===== */
+#auth-screen{position:fixed;inset:0;background:var(--bg-page);display:flex;align-items:center;justify-content:center;z-index:200;}
+.auth-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:36px 32px;width:380px;max-width:90vw;box-shadow:0 8px 30px rgba(0,0,0,.08);}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.auth-logo .sq{width:34px;height:34px;border-radius:8px;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;}
+.auth-title{font-weight:700;font-size:18px;}
+.auth-sub{color:var(--text-muted);font-size:13px;margin:6px 0 22px;}
+.lang-toggle{display:flex;gap:6px;margin-bottom:18px;justify-content:center;}
+.lang-toggle button{border:1px solid var(--border);background:#fff;border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text-muted);font-weight:600;}
+.lang-toggle button.active{background:var(--blue-bg);color:var(--color-accent-dark);border-color:var(--blue-border);}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:5px;font-weight:500;}
+.field input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13.5px;outline:none;}
+.field input:focus{border-color:var(--color-accent);box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.pw-wrap{position:relative;}
+.pw-wrap button{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:14px;color:var(--text-muted);}
+.auth-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin:-2px 0 18px;color:var(--text-muted);}
+.auth-row label{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-muted);}
+.auth-row a{color:var(--color-accent-dark);text-decoration:none;cursor:pointer;font-size:12px;}
+.btn-primary{width:100%;background:var(--color-accent);color:#fff;border:none;border-radius:7px;padding:11px;font-size:14px;font-weight:600;margin-bottom:14px;}
+.btn-primary:hover{background:var(--color-accent-dark);}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;}
+.btn-outline{width:100%;background:#fff;color:var(--color-accent-dark);border:1px solid var(--blue-border);border-radius:7px;padding:11px;font-size:14px;font-weight:600;margin-bottom:14px;}
+.divider{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:12px;margin-bottom:14px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+.btn-google{width:100%;border:1px solid var(--border);background:#fff;border-radius:7px;padding:10px;font-size:13.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;}
+.btn-google:disabled{opacity:.6;cursor:not-allowed;}
+.auth-foot{text-align:center;font-size:13px;color:var(--text-muted);}
+.auth-foot a{color:var(--color-accent-dark);text-decoration:none;font-weight:600;cursor:pointer;}
+.auth-err{font-size:11px;color:var(--red);margin-bottom:12px;display:none;line-height:1.4;}
+.auth-err.show{display:block;}
+
+/* ===== APP SHELL ===== */
+#app{display:none;min-height:100vh;}
+.layout{display:flex;min-height:100vh;}
+
+/* ----- SIDEBAR ----- */
+.sidebar{
+  width:230px;background:var(--bg-sidebar);border-right:1px solid var(--border);
+  min-height:100vh;flex-shrink:0;display:flex;flex-direction:column;
+}
+.sidebar-top{padding:16px 16px 0;}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.brand .sq{width:26px;height:26px;border-radius:6px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.brand-text{font-weight:700;font-size:14.5px;}
+.brand-text .accent{color:var(--color-accent);}
+
+.sidebar-scroll{flex:1;overflow-y:auto;padding:0 12px;}
+
+.gestion-btn{
+  width:100%;background:var(--bg-page);border:1px solid var(--border);border-radius:7px;
+  padding:8px 10px;font-size:12.5px;font-weight:600;color:var(--text-main);
+  display:flex;align-items:center;gap:7px;margin-bottom:16px;
+}
+.gestion-btn:hover{background:#e9eaec;}
+
+.sb-section-title{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin:14px 6px 6px;}
+.sb-empty{font-size:11.5px;color:#9ca3af;padding:4px 6px 10px;font-style:italic;}
+
+.all-task-item{
+  display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:7px;cursor:pointer;
+  font-size:13px;font-weight:700;margin-bottom:4px;background:#fef9ec;border:1px solid #fde68a;color:#92400e;
+}
+.all-task-item:hover{background:#fef3c7;}
+.all-task-item.active{background:#fde68a;}
+.all-task-item .count{margin-left:auto;background:#fff;color:#92400e;font-size:10.5px;padding:1px 7px;border-radius:10px;font-weight:700;}
+
+.list-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;
+  font-size:13px;color:var(--text-main);margin-bottom:2px;
+}
+.list-item:hover{background:var(--bg-page);}
+.list-item.active{background:var(--blue-bg);color:var(--color-accent-dark);font-weight:600;}
+.list-item .emoji{font-size:13px;flex-shrink:0;}
+.list-item .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-item .badge{flex-shrink:0;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px;}
+.list-item .badge.red{background:#fee2e2;color:#b91c1c;}
+.list-item .badge.zero{background:var(--bg-page);color:#9ca3af;}
+
+.sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;}
+.attribuer-title{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.attribuer-target{font-size:11.5px;color:var(--text-main);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.attribuer-target .emoji{font-size:13px;}
+.attribuer-target b{font-weight:700;}
+.attribuer-row{display:flex;gap:6px;margin-bottom:6px;}
+.attribuer-row input{flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;}
+.btn-attribuer{width:100%;background:var(--color-accent);color:#fff;border:none;border-radius:6px;padding:8px;font-size:12.5px;font-weight:600;}
+.btn-attribuer:hover{background:var(--color-accent-dark);}
+.btn-attribuer:disabled{opacity:.5;cursor:not-allowed;}
+.attribuer-hint{font-size:10.5px;color:#9ca3af;margin-top:6px;display:flex;align-items:center;gap:4px;}
+.attribuer-chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 8px;}
+.mini-chip{
+  display:flex;align-items:center;gap:4px;background:var(--blue-bg);border:1px solid var(--blue-border);
+  border-radius:14px;padding:2px 4px 2px 8px;font-size:10.5px;color:var(--color-accent-dark);font-weight:600;
+}
+.mini-chip button{border:none;background:none;color:var(--color-accent-dark);font-size:11px;cursor:pointer;padding:0 3px;}
+
+.user-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding:12px 16px;}
+.user-footer-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.user-footer-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.user-footer-role{font-size:10px;color:var(--text-muted);}
+.user-footer-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.lang-mini{display:flex;gap:3px;}
+.lang-mini button{border:1px solid var(--border);background:#fff;border-radius:4px;padding:2px 6px;font-size:10px;color:var(--text-muted);}
+.lang-mini button.active{background:var(--blue-bg);color:var(--color-accent-dark);border-color:var(--blue-border);}
+.btn-quit{border:none;background:none;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px;}
+.btn-quit:hover{color:var(--red);}
+
+/* ----- MAIN AREA ----- */
+.main{flex:1;padding:22px 28px;max-width:1300px;min-width:0;}
+.mobile-menu-btn{display:none;background:#fff;border:1px solid var(--border);border-radius:7px;font-size:16px;padding:6px 10px;margin-bottom:14px;}
+
+.main-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
+.main-title-block{display:flex;align-items:center;gap:10px;min-width:0;}
+.main-title-block .emoji-big{font-size:22px;}
+.main-title-text h1{margin:0;font-size:19px;font-weight:700;}
+.main-title-text .sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.header-actions{display:flex;gap:8px;flex-shrink:0;}
+.btn-pill{
+  border:1px solid var(--border);background:#fff;border-radius:7px;padding:8px 14px;
+  font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;color:var(--text-main);
+}
+.btn-pill:hover{background:var(--bg-page);}
+.btn-pill.excel{background:#dcfce7;border-color:#86efac;color:#166534;}
+.btn-pill.pdf{background:#fef3c7;border-color:#fde68a;color:#92400e;}
+.btn-pill.gerer{background:var(--blue-bg);border-color:var(--blue-border);color:var(--color-accent-dark);}
+.btn-pill.danger{background:var(--red-bg);border-color:var(--red-border);color:#b91c1c;}
+
+.stat-cards{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px;margin-bottom:20px;}
+.stat-card{border-radius:10px;padding:16px 18px;}
+.stat-card .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.85;margin-bottom:6px;}
+.stat-card .val{font-size:24px;font-weight:700;}
+.stat-card.main{background:var(--color-accent);color:#fff;}
+.stat-card.red-c{background:#fff;border:1px solid var(--red-border);}
+.stat-card.red-c .lbl{color:#b91c1c;}
+.stat-card.red-c .val{color:#b91c1c;}
+.stat-card.blue-c{background:#fff;border:1px solid var(--blue-border);}
+.stat-card.blue-c .lbl{color:var(--color-accent-dark);}
+.stat-card.blue-c .val{color:var(--color-accent-dark);}
+
+.toolbar2{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.btn{border:none;border-radius:7px;padding:9px 14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.btn-add{background:#dcfce7;color:#166534;}
+.btn-add:hover{background:#bbf7d0;}
+.btn-del{background:#fee2e2;color:#b91c1c;}
+.btn-del:hover{background:#fecaca;}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap;}
+.tab{padding:9px 14px;font-size:13px;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.tab:hover{color:var(--text-main);}
+.tab.active{color:var(--color-accent-dark);border-bottom-color:var(--color-accent);}
+
+.task-list-wrap{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.task-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #f3f4f6;}
+.task-row:last-child{border-bottom:none;}
+.task-row.status-red{background:#fef2f2;}
+.task-row.status-blue{background:#eff6ff;}
+.task-row.status-green{background:#f0fdf4;}
+.task-checkbox{width:15px;height:15px;flex-shrink:0;accent-color:var(--red);}
+.task-star{font-size:14px;cursor:pointer;flex-shrink:0;color:#d1d5db;}
+.task-star.active{color:#fbbf24;}
+.task-num{font-size:11px;color:var(--text-muted);font-weight:600;width:28px;flex-shrink:0;}
+.task-body{flex:1;min-width:0;}
+.task-text{font-size:13.5px;font-weight:500;}
+.task-meta{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.status-buttons{display:flex;gap:5px;flex-shrink:0;}
+.status-btn{border:1px solid var(--border);background:#fff;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text-muted);}
+.status-btn:hover{opacity:.85;}
+.status-btn.sel-red{background:var(--red);color:#fff;border-color:var(--red);}
+.status-btn.sel-blue{background:var(--blue);color:#fff;border-color:var(--blue);}
+.status-btn.sel-green{background:var(--green);color:#fff;border-color:var(--green);}
+
+/* All Task table view */
+.alltask-group{margin-bottom:18px;}
+.alltask-group-head{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--text-main);margin-bottom:8px;padding-left:2px;flex-wrap:wrap;}
+.alltask-group-head .emoji{font-size:14px;}
+.alltask-group-head .owner{font-weight:500;color:var(--text-muted);}
+.alltask-group-head .btn-small{margin-left:4px;}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.empty-state .big-emoji{font-size:40px;margin-bottom:12px;}
+.empty-state .et{font-weight:600;color:var(--text-main);margin-bottom:5px;font-size:14.5px;}
+
+/* ===== MODALS ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:center;justify-content:center;z-index:150;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:12px;width:480px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.18);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);}
+.modal-head h3{margin:0;font-size:15.5px;font-weight:700;}
+.modal-close{border:none;background:none;font-size:18px;color:var(--text-muted);cursor:pointer;}
+.modal-body{padding:20px 22px;}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--border);}
+.btn-cancel{background:#fff;border:1px solid var(--border);border-radius:7px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--text-main);}
+.btn-confirm{background:var(--color-accent);border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:600;color:#fff;}
+.btn-confirm:hover{background:var(--color-accent-dark);}
+.btn-confirm.danger{background:var(--red);}
+.btn-confirm.danger:hover{background:#dc2626;}
+.field-mini{margin-bottom:14px;}
+.field-mini label{display:block;font-size:12px;font-weight:600;color:var(--text-main);margin-bottom:6px;}
+.field-mini input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13.5px;outline:none;}
+.field-mini input:focus{border-color:var(--color-accent);}
+.field-hint{font-size:11.5px;color:var(--text-muted);margin-top:5px;}
+.assignee-chip-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;min-height:20px;}
+.assignee-chip{display:flex;align-items:center;gap:6px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;color:var(--color-accent-dark);font-weight:600;}
+.assignee-chip button{border:none;background:none;color:var(--color-accent-dark);font-size:13px;padding:0 4px;cursor:pointer;}
+.add-assignee-row{display:flex;gap:8px;}
+.add-assignee-row input{flex:1;}
+.btn-small{background:var(--bg-page);border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--text-main);}
+.btn-small:hover{background:#e5e7eb;}
+.suggest-box{margin-top:6px;border:1px solid var(--border);border-radius:6px;background:#fff;max-height:120px;overflow-y:auto;}
+.suggest-item{padding:8px 11px;font-size:12.5px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.suggest-item:hover{background:var(--bg-page);}
+.mini-avatar{width:22px;height:22px;border-radius:50%;background:var(--color-accent);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.admin-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #f3f4f6;}
+.admin-toggle-row:last-child{border-bottom:none;}
+.member-mini{display:flex;align-items:center;gap:9px;}
+.switch{position:relative;width:38px;height:21px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:21px;transition:.2s;}
+.slider::before{content:"";position:absolute;width:16px;height:16px;left:3px;top:2.5px;background:#fff;border-radius:50%;transition:.2s;}
+.switch input:checked + .slider{background:var(--color-accent);}
+.switch input:checked + .slider::before{transform:translateX(16px);}
+
+.toast{position:fixed;bottom:24px;right:24px;background:#111827;color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:300;opacity:0;transform:translateY(8px);transition:.25s;display:flex;align-items:center;gap:8px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+.loader-overlay{position:fixed;inset:0;background:rgba(243,244,246,.8);display:flex;align-items:center;justify-content:center;z-index:250;}
+.loader-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--color-accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media (max-width:880px){
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;display:none;min-height:0;position:fixed;top:0;left:0;right:0;bottom:0;z-index:90;overflow-y:auto;}
+  .sidebar.open{display:flex;}
+  .mobile-menu-btn{display:block;}
+  .main{padding:16px;max-width:100%;}
+  .stat-cards{grid-template-columns:1fr;}
+  .task-row{flex-wrap:wrap;}
+  .status-buttons{margin-left:33px;}
+  .modal-box{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOADER ============ -->
+<div class="loader-overlay" id="loader" style="display:none;"><div class="loader-spinner"></div></div>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="sq">L</div>
+      <div class="auth-title">LISTES</div>
+    </div>
+    <div class="auth-sub" data-fr="listes.sasfr.com — Connectez-vous pour accéder à vos listes" data-zh="listes.sasfr.com — 登录以访问您的列表">listes.sasfr.com — Connectez-vous pour accéder à vos listes</div>
+    <div class="lang-toggle">
+      <button class="active" id="auth-btn-fr" onclick="setLang('fr')">FR</button>
+      <button id="auth-btn-zh" onclick="setLang('zh')">中文</button>
+    </div>
+    <div class="field"><label data-fr="Email" data-zh="邮箱">Email</label><input type="email" id="login-email" autocomplete="email" placeholder="vous@exemple.com"></div>
+    <div class="field"><label data-fr="Mot de passe" data-zh="密码">Mot de passe</label>
+      <div class="pw-wrap"><input type="password" id="login-pw" placeholder="········"><button type="button" onclick="togglePw('login-pw')">👁️</button></div>
+    </div>
+    <div class="auth-row">
+      <label><input type="checkbox" id="remember-me" checked> <span data-fr="Se souvenir de moi" data-zh="记住我">Se souvenir de moi</span></label>
+      <a onclick="sendPasswordReset()" id="forgot-link" data-fr="Mot de passe oublié ?" data-zh="忘记密码？">Mot de passe oublié ?</a>
+    </div>
+    <div class="auth-err" id="auth-err"></div>
+    <button class="btn-primary" id="auth-submit" onclick="handleAuthSubmit()" data-fr="Se connecter" data-zh="登录">Se connecter</button>
+    <div class="divider" data-fr="ou" data-zh="或">ou</div>
+    <button class="btn-google" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span data-fr="Se connecter avec Google" data-zh="使用 Google 登录">Se connecter avec Google</span>
+    </button>
+    <div class="auth-foot"><a id="auth-toggle" onclick="toggleAuthMode()" data-fr="Pas de compte ? S'inscrire" data-zh="没有账户？注册">Pas de compte ? S'inscrire</a></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="brand"><div class="sq">L</div><div class="brand-text">Listes<span class="accent">Client</span></div></div>
+        <button class="gestion-btn" onclick="openGestionView()">⚙️ <span data-fr="Gestion listes" data-zh="列表管理">Gestion listes</span></button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <div id="all-task-slot"></div>
+
+        <div class="sb-section-title" data-fr="Mes listes" data-zh="我的列表">Mes listes</div>
+        <div id="sb-mylists"></div>
+
+        <div class="sb-section-title" data-fr="Listes partagées avec moi" data-zh="分享给我的列表">Listes partagées avec moi</div>
+        <div id="sb-shared"></div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="attribuer-title" data-fr="Attribuer" data-zh="分配">Attribuer</div>
+        <div class="attribuer-target" id="attribuer-target"><span class="emoji">📋</span> <b data-fr="Sélectionnez une liste" data-zh="请选择一个列表">Sélectionnez une liste</b></div>
+        <div class="attribuer-chips" id="attribuer-chips"></div>
+        <div class="attribuer-row">
+          <input type="text" id="attribuer-input" placeholder="collaborateur@exemple.com" oninput="filterAttribuerSuggest()">
+        </div>
+        <div class="suggest-box" id="attribuer-suggest" style="display:none;"></div>
+        <button class="btn-attribuer" id="btn-attribuer" onclick="attribuerFromSidebar()" disabled>👤 <span data-fr="Attribuer" data-zh="分配">Attribuer</span></button>
+        <div class="attribuer-hint">🔑 <span data-fr="Multi-attribution possible." data-zh="支持多用户分配。">Multi-attribution possible.</span></div>
+      </div>
+
+      <div class="user-footer">
+        <div class="user-footer-left">
+          <div class="avatar" id="user-avatar">?</div>
+          <div>
+            <div class="user-footer-name" id="user-footer-name"></div>
+            <div class="user-footer-role" id="user-footer-role"></div>
+          </div>
+        </div>
+        <div class="user-footer-right">
+          <div class="lang-mini">
+            <button class="active" id="app-btn-fr" onclick="setLang('fr')">FR</button>
+            <button id="app-btn-zh" onclick="setLang('zh')">中文</button>
+          </div>
+          <button class="btn-quit" onclick="logout()">⎋ <span data-fr="Quitter" data-zh="退出">Quitter</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+
+      <!-- VIEW: single list -->
+      <div id="view-single-list" style="display:none;">
+        <div class="main-header-row">
+          <div class="main-title-block">
+            <span class="emoji-big" id="sl-emoji">📋</span>
+            <div class="main-title-text">
+              <h1 id="sl-name"></h1>
+              <div class="sub" id="sl-sub"></div>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-pill gerer" id="sl-gerer-btn" onclick="openManageFromHeader()">👥 <span data-fr="Gérer" data-zh="管理">Gérer</span></button>
+            <button class="btn-pill excel" onclick="exportSingleListExcel()">📈 Excel</button>
+            <button class="btn-pill pdf" onclick="exportSingleListPDF()">📥 PDF</button>
+            <button class="btn-pill danger" id="sl-archive-btn" onclick="archiveCurrentList()">🗑️ <span data-fr="Archiver" data-zh="归档">Archiver</span></button>
+          </div>
+        </div>
+
+        <div class="stat-cards">
+          <div class="stat-card main"><div class="lbl" data-fr="Total tâches" data-zh="任务总数">Total tâches</div><div class="val" id="sl-total">0</div></div>
+          <div class="stat-card red-c"><div class="lbl">🔴 <span data-fr="Non exécuté" data-zh="未执行">Non exécuté</span></div><div class="val" id="sl-red">0</div></div>
+          <div class="stat-card blue-c"><div class="lbl">🔵 <span data-fr="En cours" data-zh="进行中">En cours</span></div><div class="val" id="sl-blue">0</div></div>
+        </div>
+
+        <div class="toolbar2">
+          <button class="btn btn-add" onclick="openAddTask(selectedListId)">+ <span data-fr="Ajouter une tâche" data-zh="添加任务">Ajouter une tâche</span></button>
+          <button class="btn btn-del" onclick="toggleDeleteMode()" id="del-btn">🗑️ <span data-fr="Supprimer" data-zh="删除">Supprimer</span></button>
+        </div>
+
+        <div class="tabs" id="single-tabs">
+          <div class="tab active" data-filter="all" onclick="setFilter('all')">📋 <span data-fr="Toutes" data-zh="全部">Toutes</span></div>
+          <div class="tab" data-filter="todo" onclick="setFilter('todo')">📱 <span data-fr="À traiter" data-zh="待处理">À traiter</span></div>
+          <div class="tab" data-filter="inprogress" onclick="setFilter('inprogress')">⚡ <span data-fr="En cours" data-zh="进行中">En cours</span></div>
+          <div class="tab" data-filter="done" onclick="setFilter('done')">✅ <span data-fr="Fait" data-zh="已完成">Fait</span></div>
+          <div class="tab" data-filter="fav" onclick="setFilter('fav')">⭐ <span data-fr="Favoris" data-zh="收藏">Favoris</span></div>
+          <div class="tab" data-filter="archive" onclick="setFilter('archive')">🗑️ <span data-fr="Archives" data-zh="归档">Archives</span></div>
+        </div>
+
+        <div class="task-list-wrap" id="task-list-wrap"></div>
+      </div>
+
+      <!-- VIEW: All Task (admin global) -->
+      <div id="view-all-task" style="display:none;">
+        <div class="main-header-row">
+          <div class="main-title-block">
+            <span class="emoji-big">🌐</span>
+            <div class="main-title-text"><h1 data-fr="Toutes les listes" data-zh="所有列表">Toutes les listes</h1><div class="sub" data-fr="Vue globale admin · toutes les listes, tous créateurs" data-zh="全局管理员视图 · 所有列表和创建者">Vue globale admin · toutes les listes, tous créateurs</div></div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-pill" onclick="openCreateListModal()">+ <span data-fr="Nouvelle liste" data-zh="新建列表">Nouvelle liste</span></button>
+            <button class="btn-pill excel" onclick="exportAllListsExcel()">📈 Excel</button>
+            <button class="btn-pill pdf" onclick="exportAllListsPDF()">📥 PDF</button>
+          </div>
+        </div>
+        <div class="stat-cards">
+          <div class="stat-card main"><div class="lbl" data-fr="Listes au total" data-zh="列表总数">Listes au total</div><div class="val" id="at-total-lists">0</div></div>
+          <div class="stat-card red-c"><div class="lbl">🔴 <span data-fr="Non exécuté" data-zh="未执行">Non exécuté</span></div><div class="val" id="at-red">0</div></div>
+          <div class="stat-card blue-c"><div class="lbl">🔵 <span data-fr="En cours" data-zh="进行中">En cours</span></div><div class="val" id="at-blue">0</div></div>
+        </div>
+        <div class="tabs" id="all-tabs">
+          <div class="tab active" data-atfilter="all" onclick="setAtFilter('all')">📋 <span data-fr="Toutes" data-zh="全部">Toutes</span></div>
+          <div class="tab" data-atfilter="todo" onclick="setAtFilter('todo')">📱 <span data-fr="À traiter" data-zh="待处理">À traiter</span></div>
+          <div class="tab" data-atfilter="inprogress" onclick="setAtFilter('inprogress')">⚡ <span data-fr="En cours" data-zh="进行中">En cours</span></div>
+          <div class="tab" data-atfilter="done" onclick="setAtFilter('done')">✅ <span data-fr="Fait" data-zh="已完成">Fait</span></div>
+          <div class="tab" data-atfilter="fav" onclick="setAtFilter('fav')">⭐ <span data-fr="Favoris" data-zh="收藏">Favoris</span></div>
+          <div class="tab" data-atfilter="archive" onclick="setAtFilter('archive')">🗑️ <span data-fr="Archives" data-zh="归档">Archives</span></div>
+        </div>
+        <div id="all-task-groups"></div>
+      </div>
+
+      <!-- VIEW: empty -->
+      <div id="view-empty">
+        <div class="empty-state">
+          <div class="big-emoji">🗂️</div>
+          <div class="et" data-fr="Aucune liste sélectionnée" data-zh="未选择列表">Aucune liste sélectionnée</div>
+          <div data-fr="Choisissez une liste dans la barre latérale, ou créez-en une nouvelle." data-zh="从侧边栏选择列表，或创建新列表。">Choisissez une liste dans la barre latérale, ou créez-en une nouvelle.</div>
+          <button class="btn btn-add" style="margin:18px auto 0;" onclick="openCreateListModal()">+ <span data-fr="Nouvelle liste" data-zh="新建列表">Nouvelle liste</span></button>
+        </div>
+      </div>
+
+      <!-- VIEW: gestion / corbeille + membres -->
+      <div id="view-gestion" style="display:none;">
+        <div class="main-header-row">
+          <div class="main-title-block"><span class="emoji-big">⚙️</span><div class="main-title-text"><h1 data-fr="Gestion des listes" data-zh="列表管理">Gestion des listes</h1><div class="sub" data-fr="Corbeille des listes archivées" data-zh="已归档列表回收站">Corbeille des listes archivées</div></div></div>
+        </div>
+        <div class="task-list-wrap" id="trash-list-wrap" style="margin-bottom:24px;">
+          <div style="padding:14px 16px;color:var(--text-muted);font-size:13px;" data-fr="Chargement…" data-zh="加载中…">Chargement…</div>
+        </div>
+        <div style="height:24px;"></div>
+        <div class="main-header-row">
+          <div class="main-title-block"><span class="emoji-big">👥</span><div class="main-title-text"><h1 data-fr="Gérer les membres" data-zh="成员管理">Gérer les membres</h1><div class="sub" data-fr="Attribuer le rôle admin" data-zh="分配管理员角色">Attribuer le rôle admin</div></div></div>
+        </div>
+        <div class="task-list-wrap" id="members-table"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<!-- Create list -->
+<div class="modal-overlay" id="modal-create-list">
+  <div class="modal-box">
+    <div class="modal-head"><h3 data-fr="+ Nouvelle liste" data-zh="+ 新建列表">+ Nouvelle liste</h3><button class="modal-close" onclick="closeModal('modal-create-list')">✕</button></div>
+    <div class="modal-body">
+      <div class="field-mini"><label data-fr="Nom de la liste *" data-zh="列表名称 *">Nom de la liste *</label><input type="text" id="new-list-name" placeholder="Ex: Chantier Bussy — Électricité"></div>
+      <div class="field-mini"><label data-fr="Emoji (optionnel)" data-zh="表情符号 (可选)">Emoji (optionnel)</label><input type="text" id="new-list-emoji" maxlength="2" value="📋"></div>
+      <div class="field-mini">
+        <label data-fr="Assigner à (par email, plusieurs possibles)" data-zh="分配给（通过邮箱，可多选）">Assigner à (par email, plusieurs possibles)</label>
+        <div class="add-assignee-row">
+          <input type="text" id="assignee-input" placeholder="email@sasfr.com" oninput="filterSuggestions()">
+          <button class="btn-small" onclick="addAssigneeFromInput()" data-fr="Ajouter" data-zh="添加">Ajouter</button>
+        </div>
+        <div class="suggest-box" id="suggest-box" style="display:none;"></div>
+        <div class="assignee-chip-list" id="new-list-assignees"></div>
+        <div class="field-hint" data-fr="Cette liste apparaîtra dans « Mes listes » pour vous, et dans « Listes partagées avec moi » pour les personnes assignées." data-zh="该列表将显示在您的「我的列表」中，并显示在分配人员的「分享给我的列表」中。">Cette liste apparaîtra dans « Mes listes » pour vous, et dans « Listes partagées avec moi » pour les personnes assignées.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-create-list')" data-fr="Annuler" data-zh="取消">Annuler</button>
+      <button class="btn-confirm" onclick="createList()" data-fr="Créer la liste" data-zh="创建列表">Créer la liste</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage list -->
+<div class="modal-overlay" id="modal-manage-list">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="manage-list-title">Gérer la liste</h3><button class="modal-close" onclick="closeModal('modal-manage-list')">✕</button></div>
+    <div class="modal-body">
+      <div class="field-mini">
+        <label data-fr="Personnes assignées" data-zh="已分配人员">Personnes assignées</label>
+        <div class="add-assignee-row">
+          <input type="text" id="manage-assignee-input" placeholder="email@sasfr.com" oninput="filterSuggestionsManage()">
+          <button class="btn-small" onclick="addAssigneeFromManage()" data-fr="Ajouter" data-zh="添加">Ajouter</button>
+        </div>
+        <div class="suggest-box" id="suggest-box-manage" style="display:none;"></div>
+        <div class="assignee-chip-list" id="manage-list-assignees"></div>
+        <div class="field-hint" data-fr="Ajoutez ou retirez librement. Le créateur reste toujours sur la liste." data-zh="自由添加或移除。创建者始终保留在列表中。">Ajoutez ou retirez librement. Le créateur reste toujours sur la liste.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('modal-manage-list')" data-fr="Fermer" data-zh="关闭">Fermer</button>
+      <button class="btn-confirm" onclick="saveManageList()" data-fr="Enregistrer" data-zh="保存">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add task -->
+<div class="modal-overlay" id="modal-add-task">
+  <div class="modal-box">
+    <div class="modal-head"><h3 data-fr="+ Ajouter une tâche" data-zh="+ 添加任务">+ Ajouter une tâche</h3><button class="modal-close" onclick="closeModal('modal-add-task')">✕</button></div>
+    <div class="modal-body"><div class="field-mini"><label data-fr="Texte de la tâche *" data-zh="任务内容 *">Texte de la tâche *</label><input type="text" id="new-task-text" placeholder="Ex: Commander 2 vasques"></div></div>
+    <div class="modal-foot"><button class="btn-cancel" onclick="closeModal('modal-add-task')" data-fr="Annuler" data-zh="取消">Annuler</button><button class="btn-confirm" onclick="confirmAddTask()" data-fr="Ajouter" data-zh="添加">Ajouter</button></div>
+  </div>
+</div>
+
+<!-- Confirm delete (permanent) -->
+<div class="modal-overlay" id="modal-confirm-delete">
+  <div class="modal-box">
+    <div class="modal-head"><h3 data-fr="⚠️ Supprimer définitivement" data-zh="⚠️ 永久删除">⚠️ Supprimer définitivement</h3><button class="modal-close" onclick="closeModal('modal-confirm-delete')">✕</button></div>
+    <div class="modal-body">
+      <p data-fr="Cette action est irréversible. Toutes les tâches de cette liste seront également supprimées." data-zh="此操作不可撤销。该列表中的所有任务也将被删除。">Cette action est irréversible. Toutes les tâches de cette liste seront également supprimées.</p>
+    </div>
+    <div class="modal-foot"><button class="btn-cancel" onclick="closeModal('modal-confirm-delete')" data-fr="Annuler" data-zh="取消">Annuler</button><button class="btn-confirm danger" id="btn-confirm-delete" onclick="confirmPermanentDelete()" data-fr="Supprimer définitivement" data-zh="永久删除">Supprimer définitivement</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ===================== TRADUCTIONS ===================== */
+var lang = localStorage.getItem('listes_lang') || 'fr';
+var T = {
+  fr: {},
+  zh: {}
+};
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('listes_lang', l);
+  // Auth screen buttons
+  var afr = document.getElementById('auth-btn-fr'), azh = document.getElementById('auth-btn-zh');
+  if (afr) afr.classList.toggle('active', l === 'fr');
+  if (azh) azh.classList.toggle('active', l === 'zh');
+  // App buttons
+  var bfr = document.getElementById('app-btn-fr'), bzh = document.getElementById('app-btn-zh');
+  if (bfr) bfr.classList.toggle('active', l === 'fr');
+  if (bzh) bzh.classList.toggle('active', l === 'zh');
+  // All data-fr/data-zh elements
+  document.querySelectorAll('[data-fr]').forEach(function(el) {
+    el.textContent = l === 'zh' && el.getAttribute('data-zh') ? el.getAttribute('data-zh') : el.getAttribute('data-fr');
+  });
+}
+
+/* ===================== UTILS ===================== */
+function normEmail(e) { return (e || '').toLowerCase().trim(); }
+function initials(email) {
+  if (!email) return '?';
+  var parts = email.split('@')[0].split(/[._-]/);
+  return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+}
+
+var _tt;
+function toast(msg) {
+  var t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function showLoader() { document.getElementById('loader').style.display = 'flex'; }
+function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+function togglePw(id) {
+  var el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+/* ===================== AUTH ===================== */
+var currentUser = null;    // Firebase user object
+var currentUserDoc = null; // Firestore user doc (email, displayName, admin, createdAt)
+var authMode = 'login';
+
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'register' : 'login';
+  document.getElementById('auth-submit').textContent = authMode === 'register'
+    ? (lang === 'zh' ? '注册' : "S'inscrire")
+    : (lang === 'zh' ? '登录' : 'Se connecter');
+  document.getElementById('auth-toggle').textContent = authMode === 'register'
+    ? (lang === 'zh' ? '已有账户？登录' : 'Déjà un compte ? Se connecter')
+    : (lang === 'zh' ? '没有账户？注册' : "Pas de compte ? S'inscrire");
+  document.getElementById('forgot-link').style.display = authMode === 'register' ? 'none' : '';
+}
+
+function showErr(m) {
+  var e = document.getElementById('auth-err');
+  e.textContent = m;
+  e.className = 'auth-err show';
+}
+function hideErr() { document.getElementById('auth-err').className = 'auth-err'; }
+
+async function handleAuthSubmit() {
+  hideErr();
+  var email = document.getElementById('login-email').value.trim();
+  var pass = document.getElementById('login-pw').value;
+  if (!email || !pass) {
+    showErr(lang === 'zh' ? '请输入邮箱和密码。' : 'Email et mot de passe requis.');
+    return;
+  }
+  var btn = document.getElementById('auth-submit');
+  btn.disabled = true;
+  try {
+    if (authMode === 'register') {
+      var cred = await auth.createUserWithEmailAndPassword(email, pass);
+      // Créer le document user
+      var isAdmin = (normEmail(email) === MASTER_EMAIL);
+      await usersRef.doc(cred.user.uid).set({
+        email: normEmail(email),
+        displayName: email.split('@')[0],
+        admin: isAdmin,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      await auth.signInWithEmailAndPassword(email, pass);
+    }
+    if (document.getElementById('remember-me').checked) {
+      localStorage.setItem('listes_email', email);
+    } else {
+      localStorage.removeItem('listes_email');
+    }
+  } catch (e) {
+    var msg = lang === 'zh' ? '邮箱或密码错误。' : 'Email ou mot de passe incorrect.';
+    if (e.code === 'auth/email-already-in-use') msg = lang === 'zh' ? '此邮箱已注册。' : 'Cet email est déjà utilisé.';
+    if (e.code === 'auth/weak-password') msg = lang === 'zh' ? '密码至少需要6个字符。' : 'Mot de passe trop court (6 caractères minimum).';
+    if (e.code === 'auth/invalid-email') msg = lang === 'zh' ? '邮箱格式无效。' : 'Format d\'email invalide.';
+    showErr(msg);
+    btn.disabled = false;
+  }
+}
+
+async function sendPasswordReset() {
+  var email = document.getElementById('login-email').value.trim();
+  if (!email) {
+    showErr(lang === 'zh' ? '请先输入邮箱。' : 'Entrez votre email d\'abord.');
+    return;
+  }
+  try {
+    await auth.sendPasswordResetEmail(email);
+    toast(lang === 'zh' ? '重置邮件已发送 ✅' : 'Email de réinitialisation envoyé ✅');
+  } catch (e) {
+    showErr(lang === 'zh' ? '发送失败。请检查邮箱地址。' : 'Échec de l\'envoi. Vérifiez l\'adresse email.');
+  }
+}
+
+async function signInWithGoogle() {
+  var btn = document.querySelector('.btn-google');
+  btn.disabled = true;
+  try {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    var result = await auth.signInWithPopup(provider);
+    var user = result.user;
+    // Vérifier si le document user existe déjà
+    var userDoc = await usersRef.doc(user.uid).get();
+    if (!userDoc.exists) {
+      var isAdmin = (normEmail(user.email) === MASTER_EMAIL);
+      await usersRef.doc(user.uid).set({
+        email: normEmail(user.email),
+        displayName: user.displayName || user.email.split('@')[0],
+        admin: isAdmin,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  } catch (e) {
+    console.error('Google sign-in error:', e);
+    btn.disabled = false;
+  }
+}
+
+function logout() {
+  auth.signOut();
+}
+
+// Vérifier si c'est le tout premier user → admin bootstrap
+async function bootstrapAdminIfFirst(uid, email) {
+  var snap = await usersRef.orderBy('createdAt').limit(2).get();
+  // Si le seul doc est celui-ci, ou si aucun doc n'existe encore, c'est le premier
+  if (snap.size <= 1) {
+    var isMaster = (normEmail(email) === MASTER_EMAIL);
+    await usersRef.doc(uid).set({
+      email: normEmail(email),
+      displayName: email.split('@')[0],
+      admin: true,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    console.log('👑 Bootstrap admin activé pour', email);
+  }
+}
+
+/* ===================== STATE ===================== */
+var selectedListId = null;
+var viewingAllTask = false;
+var viewingGestion = false;
+var activeFilter = 'all';
+var activeAtFilter = 'all';
+var deleteMode = false;
+var manageListId = null;
+var pendingAddTaskListId = null;
+var pendingDeleteListId = null;
+
+// Caches locaux (remplis par onSnapshot)
+var allLists = [];           // Toutes les listes visibles par l'utilisateur
+var allTasksMap = {};        // listId → [tasks]
+var allUsers = [];           // Tous les utilisateurs (pour autocomplétion)
+var currentUserDocLocal = null;
+
+// Unsubscribers
+var unsubLists = null;
+var unsubTasksMap = {};
+var unsubUsers = null;
+
+/* ===================== FIRESTORE LISTENERS ===================== */
+function startListeners() {
+  // Écouter les users (pour autocomplétion)
+  unsubUsers = usersRef.onSnapshot(function(snap) {
+    allUsers = [];
+    snap.forEach(function(doc) {
+      allUsers.push({ id: doc.id, ...doc.data() });
+    });
+    // Re-render si on a besoin de l'autocomplétion
+  }, function(err) {
+    console.error('Users listener error:', err);
+  });
+
+  // Écouter les listes visibles
+  // Règle: créées par l'utilisateur OU l'utilisateur est dans assignees
+  var email = normEmail(currentUser.email);
+  unsubLists = listsRef.onSnapshot(function(snap) {
+    allLists = [];
+    var toUnsub = {};
+
+    snap.forEach(function(doc) {
+      var data = doc.data();
+      var listEmail = normEmail(data.createdBy || '');
+      var assignees = (data.assignees || []).map(normEmail);
+
+      // Filtrage côté client (doublé par les règles Firestore)
+      if (listEmail === email || assignees.includes(email) || (currentUserDocLocal && currentUserDocLocal.admin)) {
+        var list = { id: doc.id, ...data };
+        allLists.push(list);
+
+        // Démarrer l'écoute des tâches pour cette liste si pas déjà fait
+        if (!unsubTasksMap[doc.id]) {
+          unsubTasksMap[doc.id] = listsRef.doc(doc.id).collection('tasks').onSnapshot(function(taskSnap) {
+            var tasks = [];
+            taskSnap.forEach(function(tDoc) {
+              tasks.push({ id: tDoc.id, ...tDoc.data() });
+            });
+            allTasksMap[doc.id] = tasks;
+            renderAll();
+          }, function(err) {
+            console.error('Tasks listener error for', doc.id, err);
+          });
+        }
+        toUnsub[doc.id] = true;
+      }
+    });
+
+    // Nettoyer les listeners de tâches pour les listes supprimées
+    Object.keys(unsubTasksMap).forEach(function(lid) {
+      if (!toUnsub[lid]) {
+        unsubTasksMap[lid]();
+        delete unsubTasksMap[lid];
+        delete allTasksMap[lid];
+      }
+    });
+
+    renderAll();
+  }, function(err) {
+    console.error('Lists listener error:', err);
+  });
+}
+
+function stopListeners() {
+  if (unsubLists) { unsubLists(); unsubLists = null; }
+  Object.keys(unsubTasksMap).forEach(function(k) {
+    unsubTasksMap[k]();
+    delete unsubTasksMap[k];
+  });
+  unsubTasksMap = {};
+  allTasksMap = {};
+  if (unsubUsers) { unsubUsers(); unsubUsers = null; }
+}
+
+/* ===================== HELPERS ===================== */
+function findList(id) { return allLists.find(function(l) { return l.id === id; }); }
+function getTasks(listId) { return allTasksMap[listId] || []; }
+
+function taskMatchesFilter(t, filter) {
+  filter = filter || activeFilter;
+  if (t.archived) return filter === 'archive';
+  if (filter === 'archive') return false;
+  if (filter === 'all') return true;
+  if (filter === 'fav') return t.fav;
+  if (filter === 'todo') return t.status === 'red';
+  if (filter === 'inprogress') return t.status === 'blue';
+  if (filter === 'done') return t.status === 'green';
+  return true;
+}
+
+function getUserByEmail(email) {
+  var ne = normEmail(email);
+  return allUsers.find(function(u) { return normEmail(u.email) === ne; });
+}
+
+function getInitialsForEmail(email) {
+  var u = getUserByEmail(email);
+  if (u && u.displayName) return initials(u.displayName);
+  return initials(email);
+}
+
+function dateLabel(ts) {
+  if (!ts) return '';
+  var d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+/* ===================== MAIN RENDER ===================== */
+function renderAll() {
+  renderSidebar();
+  if (viewingGestion) {
+    renderGestionView();
+  } else if (viewingAllTask && currentUserDocLocal && currentUserDocLocal.admin) {
+    renderAllTask();
+  } else if (selectedListId) {
+    renderSingleList();
+  }
+}
+
+function renderSidebar() {
+  var email = normEmail(currentUser.email);
+  var isAdmin = currentUserDocLocal && currentUserDocLocal.admin;
+
+  // "Toutes les listes" — admin only
+  var slot = document.getElementById('all-task-slot');
+  if (isAdmin) {
+    var totalRed = 0;
+    allLists.forEach(function(l) {
+      var tasks = getTasks(l.id);
+      tasks.forEach(function(t) {
+        if (!t.archived && t.status === 'red') totalRed++;
+      });
+    });
+    slot.innerHTML = '<div class="all-task-item ' + (viewingAllTask && !viewingGestion ? 'active' : '') + '" onclick="selectAllTask()">🌐 <span data-fr="Toutes les listes" data-zh="所有列表">Toutes les listes</span> <span class="count">' + totalRed + '</span></div>';
+  } else {
+    slot.innerHTML = '';
+  }
+
+  // Mes listes
+  var myLists = allLists.filter(function(l) { return normEmail(l.createdBy) === email && !l.archived; });
+  var sharedLists = allLists.filter(function(l) { return normEmail(l.createdBy) !== email && (l.assignees || []).map(normEmail).includes(email) && !l.archived; });
+
+  function renderItem(l) {
+    var tasks = getTasks(l.id);
+    var redCount = tasks.filter(function(t) { return !t.archived && t.status === 'red'; }).length;
+    var badge = redCount > 0 ? '<span class="badge red">' + redCount + '</span>' : '';
+    var active = !viewingAllTask && !viewingGestion && selectedListId === l.id;
+    return '<div class="list-item ' + (active ? 'active' : '') + '" onclick="selectList(\'' + l.id + '\')">' +
+      '<span class="emoji">' + (l.emoji || '📋') + '</span><span class="name">' + escHtml(l.name) + '</span>' + badge +
+    '</div>';
+  }
+
+  document.getElementById('sb-mylists').innerHTML = myLists.length
+    ? myLists.map(renderItem).join('')
+    : '<div class="sb-empty" data-fr="Aucune liste créée" data-zh="没有创建的列表">Aucune liste créée</div>';
+
+  document.getElementById('sb-shared').innerHTML = sharedLists.length
+    ? sharedLists.map(renderItem).join('')
+    : '<div class="sb-empty" data-fr="Aucune liste partagée" data-zh="没有分享的列表">Aucune liste partagée</div>';
+
+  // Re-appliquer la langue
+  setLang(lang);
+
+  // Attribuer block
+  renderAttribuerSidebarTarget();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ===================== VIEW SWITCHING ===================== */
+function selectList(id) {
+  selectedListId = id;
+  viewingAllTask = false;
+  viewingGestion = false;
+  activeFilter = 'all';
+  deleteMode = false;
+  document.getElementById('sidebar').classList.remove('open');
+  renderAll();
+  showSingleListView();
+}
+
+function selectAllTask() {
+  viewingAllTask = true;
+  viewingGestion = false;
+  selectedListId = null;
+  activeAtFilter = 'all';
+  document.getElementById('sidebar').classList.remove('open');
+  renderAll();
+  showAllTaskView();
+}
+
+function openGestionView() {
+  viewingGestion = true;
+  viewingAllTask = false;
+  selectedListId = null;
+  document.getElementById('sidebar').classList.remove('open');
+  renderAll();
+  showGestionView();
+  renderGestionView();
+}
+
+function showSingleListView() {
+  document.getElementById('view-single-list').style.display = 'block';
+  document.getElementById('view-all-task').style.display = 'none';
+  document.getElementById('view-empty').style.display = 'none';
+  document.getElementById('view-gestion').style.display = 'none';
+}
+
+function showAllTaskView() {
+  document.getElementById('view-single-list').style.display = 'none';
+  document.getElementById('view-all-task').style.display = 'block';
+  document.getElementById('view-empty').style.display = 'none';
+  document.getElementById('view-gestion').style.display = 'none';
+}
+
+function showGestionView() {
+  document.getElementById('view-single-list').style.display = 'none';
+  document.getElementById('view-all-task').style.display = 'none';
+  document.getElementById('view-empty').style.display = 'none';
+  document.getElementById('view-gestion').style.display = 'block';
+}
+
+function showEmptyView() {
+  document.getElementById('view-single-list').style.display = 'none';
+  document.getElementById('view-all-task').style.display = 'none';
+  document.getElementById('view-empty').style.display = 'block';
+  document.getElementById('view-gestion').style.display = 'none';
+}
+
+/* ===================== SINGLE LIST VIEW ===================== */
+function renderSingleList() {
+  var list = findList(selectedListId);
+  if (!list) { showEmptyView(); return; }
+  showSingleListView();
+
+  document.getElementById('sl-emoji').textContent = list.emoji || '📋';
+  document.getElementById('sl-name').textContent = list.name;
+  var owner = getUserByEmail(list.createdBy);
+  var ownerName = owner ? (owner.displayName || owner.email) : list.createdBy;
+  document.getElementById('sl-sub').textContent = 'Créée par ' + ownerName + ((list.assignees || []).length ? ' · Assignée à ' + list.assignees.length + ' personne(s)' : '');
+
+  var canManage = normEmail(list.createdBy) === normEmail(currentUser.email) || (currentUserDocLocal && currentUserDocLocal.admin);
+  document.getElementById('sl-gerer-btn').style.display = canManage ? 'flex' : 'none';
+  document.getElementById('sl-archive-btn').style.display = canManage ? 'flex' : 'none';
+
+  var tasks = getTasks(list.id);
+  var active = tasks.filter(function(t) { return !t.archived; });
+  document.getElementById('sl-total').textContent = active.length;
+  document.getElementById('sl-red').textContent = active.filter(function(t) { return t.status === 'red'; }).length;
+  document.getElementById('sl-blue').textContent = active.filter(function(t) { return t.status === 'blue'; }).length;
+
+  // Tabs
+  document.querySelectorAll('#single-tabs .tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.filter === activeFilter);
+  });
+
+  // Tasks
+  var filtered = tasks.filter(function(t) { return taskMatchesFilter(t, activeFilter); });
+  var wrap = document.getElementById('task-list-wrap');
+  if (filtered.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><div class="big-emoji">✅</div><div class="et" data-fr="Rien ici" data-zh="此处无内容">Rien ici</div><div data-fr="Aucune tâche dans ce filtre." data-zh="此筛选中没有任务。">Aucune tâche dans ce filtre.</div></div>';
+    setLang(lang);
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var t = filtered[i];
+    var authorName = t.createdBy ? (getUserByEmail(t.createdBy) ? (getUserByEmail(t.createdBy).displayName || t.createdBy) : t.createdBy) : '—';
+    html += '<div class="task-row status-' + t.status + '">';
+    if (deleteMode) {
+      html += '<input type="checkbox" class="task-checkbox" data-task="' + t.id + '">';
+    }
+    html += '<span class="task-star ' + (t.fav ? 'active' : '') + '" onclick="toggleFav(\'' + list.id + '\',\'' + t.id + '\')">★</span>';
+    html += '<span class="task-num">#' + String(i + 1).padStart(2, '0') + '</span>';
+    html += '<div class="task-body"><div class="task-text">' + escHtml(t.text) + '</div><div class="task-meta">' + escHtml(authorName) + ' · ' + dateLabel(t.createdAt) + '</div></div>';
+    html += '<div class="status-buttons">';
+    html += '<button class="status-btn ' + (t.status === 'blue' ? 'sel-blue' : '') + '" onclick="setStatus(\'' + list.id + '\',\'' + t.id + '\',\'blue\')">' + (lang === 'zh' ? '进行中' : 'En cours') + '</button>';
+    html += '<button class="status-btn ' + (t.status === 'green' ? 'sel-green' : '') + '" onclick="setStatus(\'' + list.id + '\',\'' + t.id + '\',\'green\')">' + (lang === 'zh' ? '完成' : 'Fait') + '</button>';
+    html += '<button class="status-btn ' + (t.status === 'red' ? 'sel-red' : '') + '" onclick="setStatus(\'' + list.id + '\',\'' + t.id + '\',\'red\')">' + (lang === 'zh' ? '未执行' : 'Non exécuté') + '</button>';
+    html += '</div></div>';
+  }
+  wrap.innerHTML = html;
+}
+
+function setFilter(f) { activeFilter = f; deleteMode = false; renderAll(); }
+function setStatus(listId, taskId, status) {
+  listsRef.doc(listId).collection('tasks').doc(taskId).update({
+    status: status,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(e) { console.error('setStatus error:', e); });
+}
+function toggleFav(listId, taskId) {
+  var tasks = getTasks(listId);
+  var t = tasks.find(function(t) { return t.id === taskId; });
+  if (!t) return;
+  listsRef.doc(listId).collection('tasks').doc(taskId).update({
+    fav: !t.fav,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(e) { console.error('toggleFav error:', e); });
+}
+
+function openAddTask(listId) {
+  pendingAddTaskListId = listId;
+  document.getElementById('new-task-text').value = '';
+  openModal('modal-add-task');
+  setTimeout(function() { document.getElementById('new-task-text').focus(); }, 100);
+}
+
+async function confirmAddTask() {
+  var text = document.getElementById('new-task-text').value.trim();
+  if (!text) { toast(lang === 'zh' ? '请输入任务内容' : 'Texte requis'); return; }
+  var targetListId = pendingAddTaskListId || selectedListId;
+  if (!targetListId) { toast(lang === 'zh' ? '未选择目标列表' : 'Aucune liste cible'); return; }
+  try {
+    await listsRef.doc(targetListId).collection('tasks').add({
+      text: text,
+      status: 'red',
+      fav: false,
+      archived: false,
+      createdBy: normEmail(currentUser.email),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('modal-add-task');
+    pendingAddTaskListId = null;
+    toast(lang === 'zh' ? '任务已添加' : 'Tâche ajoutée');
+  } catch (e) {
+    console.error('addTask error:', e);
+    toast(lang === 'zh' ? '添加失败' : 'Erreur lors de l\'ajout');
+  }
+}
+
+function toggleDeleteMode() {
+  deleteMode = !deleteMode;
+  if (!deleteMode) {
+    // Exécuter la suppression
+    var checked = document.querySelectorAll('.task-checkbox:checked');
+    if (checked.length === 0) { renderAll(); return; }
+    var toDelete = [];
+    checked.forEach(function(cb) { toDelete.push(cb.dataset.task); });
+    var listId = selectedListId;
+    var batch = db.batch();
+    toDelete.forEach(function(taskId) {
+      batch.delete(listsRef.doc(listId).collection('tasks').doc(taskId));
+    });
+    batch.commit().then(function() {
+      toast(lang === 'zh' ? '已删除 ' + toDelete.length + ' 个任务' : toDelete.length + ' tâche(s) supprimée(s)');
+    }).catch(function(e) {
+      console.error('batch delete error:', e);
+      toast(lang === 'zh' ? '删除失败' : 'Erreur de suppression');
+    });
+  }
+  renderAll();
+}
+
+function archiveCurrentList() {
+  if (!selectedListId) return;
+  var list = findList(selectedListId);
+  if (!list) return;
+  if (!confirm(lang === 'zh'
+    ? '确定要归档列表「' + list.name + '」吗？您可以稍后从管理界面恢复它。'
+    : 'Archiver la liste « ' + list.name + ' » ? Vous pourrez la restaurer depuis Gestion listes.')) return;
+  listsRef.doc(selectedListId).update({
+    archived: true,
+    archivedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function() {
+    selectedListId = null;
+    toast(lang === 'zh' ? '列表已归档' : 'Liste archivée');
+  }).catch(function(e) { console.error('archive error:', e); });
+}
+
+/* ===================== ALL TASK VIEW ===================== */
+function setAtFilter(f) {
+  activeAtFilter = f;
+  document.querySelectorAll('#all-tabs .tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.atfilter === f);
+  });
+  renderAllTask();
+}
+
+function renderAllTask() {
+  if (!(currentUserDocLocal && currentUserDocLocal.admin)) return;
+  showAllTaskView();
+
+  document.querySelectorAll('#all-tabs .tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.atfilter === activeAtFilter);
+  });
+
+  document.getElementById('at-total-lists').textContent = allLists.filter(function(l) { return !l.archived; }).length;
+  var red = 0, blue = 0;
+  allLists.forEach(function(l) {
+    if (l.archived) return;
+    (getTasks(l.id) || []).forEach(function(t) {
+      if (!t.archived) { if (t.status === 'red') red++; if (t.status === 'blue') blue++; }
+    });
+  });
+  document.getElementById('at-red').textContent = red;
+  document.getElementById('at-blue').textContent = blue;
+
+  var visible = allLists.filter(function(l) { return !l.archived; });
+  var c = document.getElementById('all-task-groups');
+
+  if (visible.length === 0) {
+    c.innerHTML = '<div class="empty-state"><div class="big-emoji">📭</div><div class="et" data-fr="Aucune liste" data-zh="没有列表">Aucune liste</div></div>';
+    setLang(lang);
+    return;
+  }
+
+  c.innerHTML = visible.map(function(l) {
+    var owner = getUserByEmail(l.createdBy);
+    var ownerName = owner ? (owner.displayName || owner.email) : l.createdBy;
+    var filtered = (getTasks(l.id) || []).filter(function(t) { return taskMatchesFilter(t, activeAtFilter); });
+    var tasksHtml = '';
+    if (filtered.length === 0) {
+      tasksHtml = '<div style="padding:14px 16px;color:var(--text-muted);font-size:12.5px;" data-fr="Aucune tâche dans ce filtre." data-zh="此筛选中没有任务。">Aucune tâche dans ce filtre.</div>';
+    } else {
+      tasksHtml = filtered.map(function(t, idx) {
+        var authorName = t.createdBy ? (getUserByEmail(t.createdBy) ? (getUserByEmail(t.createdBy).displayName || t.createdBy) : t.createdBy) : '—';
+        return '<div class="task-row status-' + t.status + '">' +
+          '<span class="task-star ' + (t.fav ? 'active' : '') + '" onclick="toggleFav(\'' + l.id + '\',\'' + t.id + '\')">★</span>' +
+          '<span class="task-num">#' + String(idx + 1).padStart(2, '0') + '</span>' +
+          '<div class="task-body"><div class="task-text">' + escHtml(t.text) + '</div><div class="task-meta">' + escHtml(authorName) + ' · ' + dateLabel(t.createdAt) + '</div></div>' +
+          '<div class="status-buttons">' +
+          '<button class="status-btn ' + (t.status === 'blue' ? 'sel-blue' : '') + '" onclick="setStatus(\'' + l.id + '\',\'' + t.id + '\',\'blue\')">' + (lang === 'zh' ? '进行中' : 'En cours') + '</button>' +
+          '<button class="status-btn ' + (t.status === 'green' ? 'sel-green' : '') + '" onclick="setStatus(\'' + l.id + '\',\'' + t.id + '\',\'green\')">' + (lang === 'zh' ? '完成' : 'Fait') + '</button>' +
+          '<button class="status-btn ' + (t.status === 'red' ? 'sel-red' : '') + '" onclick="setStatus(\'' + l.id + '\',\'' + t.id + '\',\'red\')">' + (lang === 'zh' ? '未执行' : 'Non exécuté') + '</button>' +
+          '</div></div>';
+      }).join('');
+    }
+    return '<div class="alltask-group">' +
+      '<div class="alltask-group-head"><span class="emoji">' + (l.emoji || '📋') + '</span> ' + escHtml(l.name) + ' <span class="owner">— ' + (lang === 'zh' ? '创建者 ' : 'créée par ') + escHtml(ownerName) + ' · ' + filtered.length + ' tâche(s)</span>' +
+        '<button class="btn-small" onclick="openAddTask(\'' + l.id + '\')">+ Tâche</button>' +
+        '<button class="btn-small" onclick="selectList(\'' + l.id + '\')">' + (lang === 'zh' ? '打开 →' : 'Ouvrir →') + '</button>' +
+      '</div>' +
+      '<div class="task-list-wrap">' + tasksHtml + '</div>' +
+    '</div>';
+  }).join('');
+
+  setLang(lang);
+}
+
+/* ===================== GESTION VIEW (corbeille + membres) ===================== */
+function renderGestionView() {
+  if (!viewingGestion) return;
+
+  // Corbeille (listes archivées)
+  var trashEl = document.getElementById('trash-list-wrap');
+  var archivedLists = allLists.filter(function(l) { return l.archived; });
+
+  if (archivedLists.length === 0) {
+    trashEl.innerHTML = '<div style="padding:20px 16px;text-align:center;color:var(--text-muted);font-size:13px;" data-fr="Aucune liste archivée." data-zh="没有归档的列表。">Aucune liste archivée.</div>';
+  } else {
+    trashEl.innerHTML = archivedLists.map(function(l) {
+      var owner = getUserByEmail(l.createdBy);
+      var ownerName = owner ? (owner.displayName || owner.email) : l.createdBy;
+      return '<div class="admin-toggle-row">' +
+        '<div class="member-mini"><span style="font-size:18px;">' + (l.emoji || '📋') + '</span>' +
+          '<div><div style="font-weight:600;font-size:13px;">' + escHtml(l.name) + '</div><div style="font-size:11.5px;color:var(--text-muted);">' + escHtml(ownerName) + ' · ' + dateLabel(l.archivedAt || l.updatedAt) + '</div></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;">' +
+          '<button class="btn-small" onclick="restoreList(\'' + l.id + '\')" data-fr="Restaurer" data-zh="恢复">Restaurer</button>' +
+          ((currentUserDocLocal && currentUserDocLocal.admin) ? '<button class="btn-small" style="color:var(--red);border-color:var(--red-border);" onclick="askDeletePermanently(\'' + l.id + '\')" data-fr="Supprimer" data-zh="删除">Supprimer</button>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Membres (admin seulement, ou tout le monde peut voir la liste ? Pour l'instant, admin gère)
+  var membersEl = document.getElementById('members-table');
+  if (currentUserDocLocal && currentUserDocLocal.admin) {
+    membersEl.innerHTML = allUsers.map(function(u) {
+      return '<div class="admin-toggle-row">' +
+        '<div class="member-mini"><div class="mini-avatar">' + initials(u.displayName || u.email) + '</div>' +
+          '<div><div style="font-weight:600;font-size:13px;">' + escHtml(u.displayName || u.email) + '</div><div style="font-size:11.5px;color:var(--text-muted);">' + escHtml(u.email) + '</div></div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<span style="font-size:11.5px;color:var(--text-muted);">Admin</span>' +
+          '<label class="switch"><input type="checkbox" ' + (u.admin ? 'checked' : '') + ' onchange="toggleAdmin(\'' + u.id + '\', ' + !u.admin + ')"><span class="slider"></span></label>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } else {
+    membersEl.innerHTML = '<div style="padding:20px 16px;text-align:center;color:var(--text-muted);font-size:13px;" data-fr="Réservé aux administrateurs." data-zh="仅限管理员。">Réservé aux administrateurs.</div>';
+  }
+
+  setLang(lang);
+}
+
+function restoreList(listId) {
+  listsRef.doc(listId).update({
+    archived: false,
+    archivedAt: firebase.firestore.FieldValue.delete()
+  }).then(function() {
+    toast(lang === 'zh' ? '列表已恢复' : 'Liste restaurée');
+  }).catch(function(e) { console.error('restore error:', e); });
+}
+
+function askDeletePermanently(listId) {
+  pendingDeleteListId = listId;
+  openModal('modal-confirm-delete');
+}
+
+async function confirmPermanentDelete() {
+  if (!pendingDeleteListId) return;
+  var listId = pendingDeleteListId;
+  try {
+    // Supprimer toutes les tâches d'abord
+    var taskSnap = await listsRef.doc(listId).collection('tasks').get();
+    var batch = db.batch();
+    taskSnap.forEach(function(doc) { batch.delete(doc.ref); });
+    batch.delete(listsRef.doc(listId));
+    await batch.commit();
+    closeModal('modal-confirm-delete');
+    pendingDeleteListId = null;
+    toast(lang === 'zh' ? '列表已永久删除' : 'Liste supprimée définitivement');
+  } catch (e) {
+    console.error('permanent delete error:', e);
+    toast(lang === 'zh' ? '删除失败' : 'Erreur de suppression');
+  }
+}
+
+function toggleAdmin(userId, newVal) {
+  usersRef.doc(userId).update({ admin: newVal }).then(function() {
+    toast(lang === 'zh' ? (newVal ? '管理员角色已授予' : '管理员角色已撤销') : (newVal ? 'Rôle admin attribué' : 'Rôle admin retiré'));
+  }).catch(function(e) { console.error('toggleAdmin error:', e); });
+}
+
+/* ===================== ATTRIBUER (sidebar) ===================== */
+function renderAttribuerSidebarTarget() {
+  var target = document.getElementById('attribuer-target');
+  var chips = document.getElementById('attribuer-chips');
+  var btn = document.getElementById('btn-attribuer');
+
+  if (!selectedListId || viewingAllTask || viewingGestion) {
+    target.innerHTML = '<span class="emoji">📋</span> <b data-fr="Sélectionnez une liste" data-zh="请选择一个列表">Sélectionnez une liste</b>';
+    chips.innerHTML = '';
+    btn.disabled = true;
+    setLang(lang);
+    return;
+  }
+  var list = findList(selectedListId);
+  if (!list) {
+    btn.disabled = true;
+    return;
+  }
+  btn.disabled = false;
+  target.innerHTML = '<span class="emoji">' + (list.emoji || '📋') + '</span> <b>' + escHtml(list.name) + '</b>';
+  chips.innerHTML = (list.assignees || []).map(function(email) {
+    var m = getUserByEmail(email);
+    return '<div class="mini-chip">' + escHtml(m ? (m.displayName || m.email) : email) + '<button onclick="removeAssigneeDirect(\'' + list.id + '\',\'' + escHtml(email) + '\')">✕</button></div>';
+  }).join('');
+  setLang(lang);
+}
+
+function removeAssigneeDirect(listId, email) {
+  var list = findList(listId);
+  if (!list) return;
+  var newAssignees = (list.assignees || []).filter(function(e) { return e !== email; });
+  listsRef.doc(listId).update({ assignees: newAssignees }).then(function() {
+    toast(lang === 'zh' ? '已取消分配' : 'Attribution retirée');
+  }).catch(function(e) { console.error('removeAssignee error:', e); });
+}
+
+function filterAttribuerSuggest() {
+  var val = document.getElementById('attribuer-input').value.toLowerCase();
+  var box = document.getElementById('attribuer-suggest');
+  if (!val || !selectedListId) { box.style.display = 'none'; return; }
+  var list = findList(selectedListId);
+  if (!list) { box.style.display = 'none'; return; }
+  var assignees = (list.assignees || []).map(normEmail);
+  var matches = allUsers.filter(function(u) {
+    return (normEmail(u.email).includes(val) || (u.displayName && u.displayName.toLowerCase().includes(val)))
+      && !assignees.includes(normEmail(u.email))
+      && normEmail(u.email) !== normEmail(list.createdBy);
+  });
+  if (matches.length === 0) { box.style.display = 'none'; return; }
+  box.innerHTML = matches.map(function(m) {
+    return '<div class="suggest-item" onclick="pickAttribuer(\'' + escHtml(m.email) + '\')"><span class="mini-avatar">' + initials(m.displayName || m.email) + '</span> ' + escHtml(m.displayName || m.email) + ' — ' + escHtml(m.email) + '</div>';
+  }).join('');
+  box.style.display = 'block';
+}
+
+function pickAttribuer(email) {
+  document.getElementById('attribuer-input').value = email;
+  document.getElementById('attribuer-suggest').style.display = 'none';
+}
+
+async function attribuerFromSidebar() {
+  if (!selectedListId) { toast(lang === 'zh' ? '请先选择列表' : 'Sélectionnez une liste d\'abord'); return; }
+  var email = document.getElementById('attribuer-input').value.trim();
+  if (!email) return;
+  var list = findList(selectedListId);
+  if (!list) return;
+  var assignees = (list.assignees || []).slice();
+  var ne = normEmail(email);
+  if (assignees.map(normEmail).includes(ne)) {
+    toast(lang === 'zh' ? '此人已被分配' : 'Cette personne est déjà assignée');
+    return;
+  }
+  assignees.push(email);
+  try {
+    await listsRef.doc(selectedListId).update({ assignees: assignees });
+    document.getElementById('attribuer-input').value = '';
+    document.getElementById('attribuer-suggest').style.display = 'none';
+    toast(lang === 'zh' ? '列表已分配' : 'Liste attribuée');
+  } catch (e) {
+    console.error('attribuer error:', e);
+    toast(lang === 'zh' ? '分配失败' : 'Erreur d\'attribution');
+  }
+}
+
+/* ===================== CREATE LIST MODAL ===================== */
+var newListAssignees = [];
+
+function openCreateListModal() {
+  document.getElementById('new-list-name').value = '';
+  document.getElementById('new-list-emoji').value = '📋';
+  newListAssignees = [];
+  renderChips('new-list-assignees', newListAssignees, removeNewAssignee);
+  openModal('modal-create-list');
+  setTimeout(function() { document.getElementById('new-list-name').focus(); }, 100);
+}
+
+function filterSuggestions() {
+  var val = document.getElementById('assignee-input').value.toLowerCase();
+  var box = document.getElementById('suggest-box');
+  if (!val) { box.style.display = 'none'; return; }
+  var matches = allUsers.filter(function(u) {
+    return (normEmail(u.email).includes(val) || (u.displayName && u.displayName.toLowerCase().includes(val)))
+      && !newListAssignees.includes(u.email)
+      && normEmail(u.email) !== normEmail(currentUser.email);
+  });
+  if (matches.length === 0) { box.style.display = 'none'; return; }
+  box.innerHTML = matches.map(function(m) {
+    return '<div class="suggest-item" onclick="pickSuggestion(\'' + escHtml(m.email) + '\')"><span class="mini-avatar">' + initials(m.displayName || m.email) + '</span> ' + escHtml(m.displayName || m.email) + ' — ' + escHtml(m.email) + '</div>';
+  }).join('');
+  box.style.display = 'block';
+}
+
+function pickSuggestion(email) {
+  document.getElementById('assignee-input').value = email;
+  document.getElementById('suggest-box').style.display = 'none';
+}
+
+function addAssigneeFromInput() {
+  var val = document.getElementById('assignee-input').value.trim().toLowerCase();
+  if (!val) return;
+  if (!newListAssignees.includes(val)) newListAssignees.push(val);
+  document.getElementById('assignee-input').value = '';
+  document.getElementById('suggest-box').style.display = 'none';
+  renderChips('new-list-assignees', newListAssignees, removeNewAssignee);
+}
+
+function removeNewAssignee(email) {
+  newListAssignees = newListAssignees.filter(function(e) { return e !== email; });
+  renderChips('new-list-assignees', newListAssignees, removeNewAssignee);
+}
+
+function renderChips(containerId, arr, removeFn) {
+  document.getElementById(containerId).innerHTML = arr.map(function(email) {
+    var m = getUserByEmail(email);
+    return '<div class="assignee-chip">' + escHtml(m ? (m.displayName || m.email) : email) + '<button onclick="' + removeFn.name + '(\'' + escHtml(email) + '\')">✕</button></div>';
+  }).join('');
+}
+
+async function createList() {
+  var name = document.getElementById('new-list-name').value.trim();
+  if (!name) { toast(lang === 'zh' ? '请输入列表名称' : 'Nom de liste requis'); return; }
+  var emoji = document.getElementById('new-list-emoji').value.trim() || '📋';
+  try {
+    var docRef = await listsRef.add({
+      name: name,
+      emoji: emoji,
+      createdBy: normEmail(currentUser.email),
+      assignees: newListAssignees.slice(),
+      archived: false,
+      archivedAt: null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('modal-create-list');
+    newListAssignees = [];
+    viewingAllTask = false;
+    viewingGestion = false;
+    // Attendre un peu que le listener propage, puis sélectionner
+    setTimeout(function() {
+      selectList(docRef.id);
+    }, 300);
+    toast(lang === 'zh' ? '列表已创建' : 'Liste créée');
+  } catch (e) {
+    console.error('createList error:', e);
+    toast(lang === 'zh' ? '创建失败' : 'Erreur de création');
+  }
+}
+
+/* ===================== MANAGE LIST MODAL ===================== */
+var manageAssignees = [];
+
+function openManageFromHeader() { openManageList(selectedListId); }
+
+function openManageList(listId) {
+  manageListId = listId;
+  var list = findList(listId);
+  if (!list) return;
+  document.getElementById('manage-list-title').textContent = (lang === 'zh' ? '管理 — ' : 'Gérer — ') + list.name;
+  manageAssignees = (list.assignees || []).slice();
+  renderChips('manage-list-assignees', manageAssignees, removeManageAssignee);
+  openModal('modal-manage-list');
+}
+
+function filterSuggestionsManage() {
+  var val = document.getElementById('manage-assignee-input').value.toLowerCase();
+  var box = document.getElementById('suggest-box-manage');
+  if (!val) { box.style.display = 'none'; return; }
+  var list = findList(manageListId);
+  if (!list) { box.style.display = 'none'; return; }
+  var matches = allUsers.filter(function(u) {
+    return (normEmail(u.email).includes(val) || (u.displayName && u.displayName.toLowerCase().includes(val)))
+      && !manageAssignees.includes(u.email)
+      && normEmail(u.email) !== normEmail(list.createdBy);
+  });
+  if (matches.length === 0) { box.style.display = 'none'; return; }
+  box.innerHTML = matches.map(function(m) {
+    return '<div class="suggest-item" onclick="pickSuggestionManage(\'' + escHtml(m.email) + '\')"><span class="mini-avatar">' + initials(m.displayName || m.email) + '</span> ' + escHtml(m.displayName || m.email) + ' — ' + escHtml(m.email) + '</div>';
+  }).join('');
+  box.style.display = 'block';
+}
+
+function pickSuggestionManage(email) {
+  document.getElementById('manage-assignee-input').value = email;
+  document.getElementById('suggest-box-manage').style.display = 'none';
+}
+
+function addAssigneeFromManage() {
+  var val = document.getElementById('manage-assignee-input').value.trim().toLowerCase();
+  if (!val) return;
+  if (!manageAssignees.includes(val)) manageAssignees.push(val);
+  document.getElementById('manage-assignee-input').value = '';
+  document.getElementById('suggest-box-manage').style.display = 'none';
+  renderChips('manage-list-assignees', manageAssignees, removeManageAssignee);
+}
+
+function removeManageAssignee(email) {
+  manageAssignees = manageAssignees.filter(function(e) { return e !== email; });
+  renderChips('manage-list-assignees', manageAssignees, removeManageAssignee);
+}
+
+async function saveManageList() {
+  try {
+    await listsRef.doc(manageListId).update({
+      assignees: manageAssignees.slice(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('modal-manage-list');
+    toast(lang === 'zh' ? '分配已更新' : 'Assignations mises à jour');
+  } catch (e) {
+    console.error('saveManageList error:', e);
+    toast(lang === 'zh' ? '保存失败' : 'Erreur de sauvegarde');
+  }
+}
+
+/* ===================== MODALS ===================== */
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ===================== EXPORT EXCEL ===================== */
+function exportSingleListExcel() {
+  var list = findList(selectedListId);
+  if (!list) return;
+  var tasks = getTasks(list.id);
+  exportToExcel([{ list: list, tasks: tasks }], list.name);
+}
+
+function exportAllListsExcel() {
+  var data = allLists.filter(function(l) { return !l.archived; }).map(function(l) {
+    return { list: l, tasks: getTasks(l.id) };
+  });
+  exportToExcel(data, 'Toutes_les_listes');
+}
+
+function exportToExcel(data, filename) {
+  var wb = XLSX.utils.book_new();
+  data.forEach(function(item) {
+    var rows = [['Statut', 'Texte', 'Favori', 'Auteur', 'Date']];
+    item.tasks.forEach(function(t) {
+      rows.push([
+        t.status === 'red' ? 'Non exécuté' : t.status === 'blue' ? 'En cours' : 'Fait',
+        t.text,
+        t.fav ? '⭐' : '',
+        t.createdBy || '',
+        t.createdAt ? dateLabel(t.createdAt) : ''
+      ]);
+    });
+    var ws = XLSX.utils.aoa_to_sheet(rows);
+    var sheetName = (item.list.name || 'Liste').substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+  XLSX.writeFile(wb, (filename || 'export') + '.xlsx');
+  toast(lang === 'zh' ? 'Excel 已导出 ✅' : 'Export Excel généré ✅');
+}
+
+/* ===================== EXPORT PDF ===================== */
+function exportSingleListPDF() {
+  var list = findList(selectedListId);
+  if (!list) return;
+  var tasks = getTasks(list.id);
+  generatePDF([{ list: list, tasks: tasks }], list.name);
+}
+
+function exportAllListsPDF() {
+  var data = allLists.filter(function(l) { return !l.archived; }).map(function(l) {
+    return { list: l, tasks: getTasks(l.id) };
+  });
+  generatePDF(data, 'Toutes_les_listes');
+}
+
+function generatePDF(data, filename) {
+  var doc = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var y = 15;
+  var pageH = 297;
+
+  // Titre
+  doc.setFontSize(16);
+  doc.setTextColor(30, 58, 95);
+  doc.text('LISTES — ' + (filename || 'Export'), 15, y);
+  y += 10;
+
+  data.forEach(function(item) {
+    if (y > pageH - 30) { doc.addPage(); y = 15; }
+
+    // Nom de la liste
+    doc.setFontSize(13);
+    doc.setTextColor(59, 130, 246);
+    doc.text((item.list.emoji || '📋') + ' ' + item.list.name, 15, y);
+    y += 7;
+
+    // Tâches
+    doc.setFontSize(9);
+    item.tasks.forEach(function(t) {
+      if (y > pageH - 15) { doc.addPage(); y = 15; }
+      var statusColor = t.status === 'red' ? [239, 68, 68] : t.status === 'blue' ? [59, 130, 246] : [22, 163, 74];
+      var statusLabel = t.status === 'red' ? '🔴' : t.status === 'blue' ? '🔵' : '🟢';
+      doc.setTextColor.apply(doc, statusColor);
+      doc.text(statusLabel + ' ' + t.text.substring(0, 80), 15, y);
+      y += 5;
+      if (t.createdBy || t.createdAt) {
+        doc.setTextColor(150, 150, 150);
+        doc.setFontSize(7);
+        doc.text((t.createdBy || '') + ' · ' + (t.createdAt ? dateLabel(t.createdAt) : ''), 20, y);
+        doc.setFontSize(9);
+        y += 4;
+      }
+    });
+
+    y += 4;
+  });
+
+  doc.save((filename || 'export') + '.pdf');
+  toast(lang === 'zh' ? 'PDF 已导出 ✅' : 'Export PDF généré ✅');
+}
+
+/* ===================== AUTH STATE CHANGE ===================== */
+auth.onAuthStateChanged(async function(user) {
+  if (user) {
+    // L'utilisateur est connecté
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+
+    currentUser = user;
+    document.getElementById('user-avatar').textContent = initials(user.displayName || user.email);
+    document.getElementById('user-footer-name').textContent = user.email;
+    document.getElementById('user-footer-role').textContent = '...';
+
+    // Persistance
+    if (document.getElementById('remember-me').checked) {
+      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
+    }
+
+    // Charger le document user
+    try {
+      var userDoc = await usersRef.doc(user.uid).get();
+      if (!userDoc.exists) {
+        // Créer le document user
+        var isFirst = (await usersRef.count().get()).data().count === 0;
+        var isMaster = normEmail(user.email) === MASTER_EMAIL;
+        var isAdmin = isFirst || isMaster;
+        await usersRef.doc(user.uid).set({
+          email: normEmail(user.email),
+          displayName: user.displayName || user.email.split('@')[0],
+          admin: isAdmin,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        currentUserDocLocal = { email: normEmail(user.email), displayName: user.displayName || user.email.split('@')[0], admin: isAdmin };
+      } else {
+        currentUserDocLocal = { id: userDoc.id, ...userDoc.data() };
+      }
+
+      document.getElementById('user-footer-role').textContent = currentUserDocLocal.admin ? 'Admin' : 'Membre';
+    } catch (e) {
+      console.error('Error loading user doc:', e);
+      document.getElementById('user-footer-role').textContent = 'Membre';
+    }
+
+    // Démarrer les listeners Firestore
+    startListeners();
+
+    // État initial
+    selectedListId = null;
+    viewingAllTask = false;
+    viewingGestion = false;
+    showEmptyView();
+
+  } else {
+    // Déconnecté
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    stopListeners();
+    currentUser = null;
+    currentUserDocLocal = null;
+
+    // Restaurer l'email mémorisé
+    var saved = localStorage.getItem('listes_email');
+    if (saved) document.getElementById('login-email').value = saved;
+  }
+});
+
+/* ===================== KEYBOARD ===================== */
+document.getElementById('login-pw').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleAuthSubmit();
+});
+
+// Fermer les modals au clic sur l'overlay
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('open');
+  }
+});
+
+// Fermer les suggest box au clic extérieur
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#attribuer-suggest') && !e.target.closest('#attribuer-input')) {
+    document.getElementById('attribuer-suggest').style.display = 'none';
+  }
+  if (!e.target.closest('#suggest-box') && !e.target.closest('#assignee-input')) {
+    document.getElementById('suggest-box').style.display = 'none';
+  }
+  if (!e.target.closest('#suggest-box-manage') && !e.target.closest('#manage-assignee-input')) {
+    document.getElementById('suggest-box-manage').style.display = 'none';
+  }
+});
+
+// Init langue
+setLang(localStorage.getItem('listes_lang') || 'fr');
+</script>
+</body>
+</html>

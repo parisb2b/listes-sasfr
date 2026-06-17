@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection — tout utilisateur authentifié peut lire les profils
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Lists collection
+    match /listes_lists/{listId} {
+      // Création : tout utilisateur authentifié peut créer une liste
+      allow create: if request.auth != null
+                    && request.resource.data.createdBy == request.auth.token.email;
+
+      // Lecture : créateur OU assigné OU admin
+      allow read: if request.auth != null
+                  && (
+                    resource.data.createdBy == request.auth.token.email
+                    || request.auth.token.email in resource.data.assignees
+                    || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                  );
+
+      // Écriture : créateur OU admin (pour archiver, modifier nom, etc.)
+      allow update: if request.auth != null
+                    && (
+                      resource.data.createdBy == request.auth.token.email
+                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                    );
+
+      // Suppression : admin uniquement (suppression définitive depuis la corbeille)
+      allow delete: if request.auth != null
+                    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+
+    // Tasks subcollection — hérite de la visibilité de la liste parente
+    match /listes_lists/{listId}/tasks/{taskId} {
+      // Création : assigné OU créateur de la liste parente OU admin
+      allow create: if request.auth != null
+                    && (
+                      get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
+                      || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees
+                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                    );
+
+      // Lecture : même règles que la liste parente
+      allow read: if request.auth != null
+                  && (
+                    get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
+                    || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees
+                    || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                  );
+
+      // Écriture : assigné OU créateur de la liste parente OU admin
+      allow update: if request.auth != null
+                    && (
+                      get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
+                      || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees
+                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                    );
+
+      // Suppression : créateur de la liste parente OU admin
+      allow delete: if request.auth != null
+                    && (
+                      get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
+                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                    );
+    }
+  }
+}
