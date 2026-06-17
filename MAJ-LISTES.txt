@@ -180,5 +180,47 @@ vercel --prod --yes
 git add -A && git commit -m "Ajout firebase.json..." && git push
 
 ================================================================================
+9. CORRECTIONS POST-DÉPLOIEMENT (2026-06-17 — session de vérification)
+================================================================================
+
+Correction 1 — vercel.json : routage qui cassait les fichiers statiques
+  Problème : la règle "routes": [{"src": "/(.*)", "dest": "/index.html"}] redirigeait
+  TOUTES les requêtes vers index.html, y compris firebase-config.js → le navigateur
+  recevait du HTML au lieu de JavaScript → auth undefined → app cassée.
+  Correctif : "builds": [{"src": "**/*", "use": "@vercel/static"}] + suppression routes.
+  + firebase-config.js inliné directement dans index.html.
+
+Correction 2 — setLang() : bascule FR/中文 qui écrasait le mode inscription
+  Problème : setLang() met à jour textContent de TOUS les éléments [data-fr], y compris
+  #auth-submit et #auth-toggle. Si on était en mode "S'inscrire", le texte revenait à
+  "Se connecter" après un changement de langue.
+  Correctif : après le forEach, restaurer les textes si authMode === 'register'.
+
+Correction 3 — onSnapshot : requêtes sans filtre rejetées par Firestore
+  Problème : listsRef.onSnapshot() sans filtre → Firestore rejette toute la requête
+  car l'utilisateur non-admin n'a pas accès à TOUTES les listes.
+  Correctif : pour non-admin, deux onSnapshot filtrés (where createdBy + where
+  assignees array-contains) avec cache fusionné. Pour admin, onSnapshot complet.
+
+Correction 4 — firestore.rules : get() sur document users inexistant
+  Problème : un get() sur users/{uid} échoue si le document n'existe pas encore
+  (utilisateur nouvellement inscrit) → toutes les règles qui dépendent de isAdmin
+  échouent → erreur "Missing or insufficient permissions".
+  Correctif : fonction helper isAdmin() avec exists() avant get().
+  + refactorisation avec fonctions helpers (isAdmin, canAccessList).
+
+Résultat des tests après corrections :
+  1. ✅ Inscription nouveau compte : OK (test-listes-2026@yopmail.com)
+  2. ✅ Connexion persistée (localStorage)
+  3. ✅ Création de liste "Test — Première liste"
+  4. ✅ Ajout de tâche "Première tâche de test"
+  5. ✅ Changement de statut (Non exécuté → En cours), stats et sidebar mises à jour
+  6. ✅ 0 erreur console JavaScript
+  7. ✅ Traduction FR/中文 fonctionnelle (y compris toggle + setLang)
+  8. ✅ Règles Firestore compilées et déployées avec succès
+
+Domaine : listes.sasfr.com (SSL en cours de provisionnement par Vercel)
+
+================================================================================
 FIN DU RAPPORT
 ================================================================================

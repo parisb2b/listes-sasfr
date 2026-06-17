@@ -1,0 +1,95 @@
+- generic [ref=e36]:
+  - generic [ref=e37]:
+    - generic [ref=e38]:
+      - generic [ref=e39]:
+        - generic [ref=e40]: L
+        - generic [ref=e41]: ListesClient
+      - button "⚙️ Gestion listes" [ref=e42] [cursor=pointer]:
+        - text: ⚙️
+        - generic [ref=e43]: Gestion listes
+    - generic [ref=e44]:
+      - generic [ref=e45]: Mes listes
+      - generic [ref=e83] [cursor=pointer]:
+        - generic [ref=e84]: 📋
+        - generic [ref=e85]: Test — Première liste
+      - generic [ref=e50]: Listes partagées avec moi
+      - generic [ref=e86]: Aucune liste partagée
+    - generic [ref=e53]:
+      - generic [ref=e54]: Attribuer
+      - generic [ref=e55]:
+        - generic [ref=e87]: 📋
+        - generic [ref=e88]: Test — Première liste
+      - textbox "collaborateur@exemple.com" [ref=e59]
+      - button "👤 Attribuer" [ref=e60] [cursor=pointer]
+      - generic [ref=e61]:
+        - text: 🔑
+        - generic [ref=e62]: Multi-attribution possible.
+    - generic [ref=e63]:
+      - generic [ref=e64]:
+        - generic [ref=e65]: TL
+        - generic [ref=e66]:
+          - generic [ref=e67]: test-listes-2026@yopmail.com
+          - generic [ref=e68]: Membre
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - button "FR" [ref=e71] [cursor=pointer]
+          - button "中文" [ref=e72] [cursor=pointer]
+        - button "⎋ Quitter" [ref=e73] [cursor=pointer]:
+          - text: ⎋
+          - generic [ref=e74]: Quitter
+  - generic [ref=e89]:
+    - generic [ref=e90]:
+      - generic [ref=e91]:
+        - generic [ref=e92]: 📋
+        - generic [ref=e93]:
+          - heading "Test — Première liste" [level=1] [ref=e94]
+          - generic [ref=e95]: Créée par test-listes-2026
+      - generic [ref=e96]:
+        - button "👥 Gérer" [ref=e97] [cursor=pointer]:
+          - text: 👥
+          - generic [ref=e98]: Gérer
+        - button "📈 Excel" [ref=e99] [cursor=pointer]
+        - button "📥 PDF" [ref=e100] [cursor=pointer]
+        - button "🗑️ Archiver" [ref=e101] [cursor=pointer]:
+          - text: 🗑️
+          - generic [ref=e102]: Archiver
+    - generic [ref=e103]:
+      - generic [ref=e104]:
+        - generic [ref=e105]: Total tâches
+        - generic [ref=e106]: "0"
+      - generic [ref=e107]:
+        - generic [ref=e108]: 🔴 Non exécuté
+        - generic [ref=e109]: "0"
+      - generic [ref=e110]:
+        - generic [ref=e111]: 🔵 En cours
+        - generic [ref=e112]: "0"
+    - generic [ref=e113]:
+      - button "+ Ajouter une tâche" [ref=e114] [cursor=pointer]:
+        - text: +
+        - generic [ref=e115]: Ajouter une tâche
+      - button "🗑️ Supprimer" [ref=e116] [cursor=pointer]:
+        - text: 🗑️
+        - generic [ref=e117]: Supprimer
+    - generic [ref=e118]:
+      - generic [ref=e119] [cursor=pointer]:
+        - text: 📋
+        - generic [ref=e120]: Toutes
+      - generic [ref=e121] [cursor=pointer]:
+        - text: 📱
+        - generic [ref=e122]: À traiter
+      - generic [ref=e123] [cursor=pointer]:
+        - text: ⚡
+        - generic [ref=e124]: En cours
+      - generic [ref=e125] [cursor=pointer]:
+        - text: ✅
+        - generic [ref=e126]: Fait
+      - generic [ref=e127] [cursor=pointer]:
+        - text: ⭐
+        - generic [ref=e128]: Favoris
+      - generic [ref=e129] [cursor=pointer]:
+        - text: 🗑️
+        - generic [ref=e130]: Archives
+    - generic [ref=e132]:
+      - generic [ref=e133]: ✅
+      - generic [ref=e134]: Rien ici
+      - generic [ref=e135]: Aucune tâche dans ce filtre.
