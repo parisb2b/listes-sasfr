@@ -2,3 +2,6 @@
 [     216ms] ReferenceError: auth is not defined
     at https://listes-sasfr.vercel.app/:1606:1
 [     219ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://listes-sasfr.vercel.app/:0
+[   78702ms] [ERROR] Google sign-in error: ReferenceError: auth is not defined
+    at signInWithGoogle (https://listes-sasfr.vercel.app/:681:18)
+    at HTMLButtonElement.onclick (https://listes-sasfr.vercel.app/:310:61) @ https://listes-sasfr.vercel.app/:694

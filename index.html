@@ -584,6 +584,13 @@ function setLang(l) {
   document.querySelectorAll('[data-fr]').forEach(function(el) {
     el.textContent = l === 'zh' && el.getAttribute('data-zh') ? el.getAttribute('data-zh') : el.getAttribute('data-fr');
   });
+  // Restaurer les textes auth si en mode inscription
+  if (authMode === 'register') {
+    var s = document.getElementById('auth-submit');
+    var t = document.getElementById('auth-toggle');
+    if (s) s.textContent = l === 'zh' ? '注册' : "S'inscrire";
+    if (t) t.textContent = l === 'zh' ? '已有账户？登录' : 'Déjà un compte ? Se connecter';
+  }
 }
 
 /* ===================== UTILS ===================== */
@@ -766,57 +773,76 @@ function startListeners() {
     console.error('Users listener error:', err);
   });
 
-  // Écouter les listes visibles
-  // Règle: créées par l'utilisateur OU l'utilisateur est dans assignees
+  // Écouter les listes visibles avec requêtes filtrées (Firestore exige des filtres
+  // côté client qui correspondent aux règles, pas de lecture "toute la collection")
   var email = normEmail(currentUser.email);
-  unsubLists = listsRef.onSnapshot(function(snap) {
-    allLists = [];
-    var toUnsub = {};
+  var isAdmin = currentUserDocLocal && currentUserDocLocal.admin;
+  var cachedLists = {};        // id → list data (fusion des 2 snapshots)
+  unsubLists = [];             // tableau d'unsubscribers
 
-    snap.forEach(function(doc) {
-      var data = doc.data();
-      var listEmail = normEmail(data.createdBy || '');
-      var assignees = (data.assignees || []).map(normEmail);
+  function trackListTasks(listId) {
+    if (!unsubTasksMap[listId]) {
+      unsubTasksMap[listId] = listsRef.doc(listId).collection('tasks').onSnapshot(function(taskSnap) {
+        var tasks = [];
+        taskSnap.forEach(function(tDoc) { tasks.push({ id: tDoc.id, ...tDoc.data() }); });
+        allTasksMap[listId] = tasks;
+        renderAll();
+      }, function(err) {
+        console.error('Tasks listener error for', listId, err);
+      });
+    }
+  }
 
-      // Filtrage côté client (doublé par les règles Firestore)
-      if (listEmail === email || assignees.includes(email) || (currentUserDocLocal && currentUserDocLocal.admin)) {
-        var list = { id: doc.id, ...data };
-        allLists.push(list);
-
-        // Démarrer l'écoute des tâches pour cette liste si pas déjà fait
-        if (!unsubTasksMap[doc.id]) {
-          unsubTasksMap[doc.id] = listsRef.doc(doc.id).collection('tasks').onSnapshot(function(taskSnap) {
-            var tasks = [];
-            taskSnap.forEach(function(tDoc) {
-              tasks.push({ id: tDoc.id, ...tDoc.data() });
-            });
-            allTasksMap[doc.id] = tasks;
-            renderAll();
-          }, function(err) {
-            console.error('Tasks listener error for', doc.id, err);
-          });
-        }
-        toUnsub[doc.id] = true;
+  function processListSnapshot(snap) {
+    snap.docChanges().forEach(function(change) {
+      var id = change.doc.id;
+      if (change.type === 'removed') {
+        delete cachedLists[id];
+        // Nettoyer le listener de tâches
+        if (unsubTasksMap[id]) { unsubTasksMap[id](); delete unsubTasksMap[id]; delete allTasksMap[id]; }
+      } else {
+        cachedLists[id] = { id: id, ...change.doc.data() };
+        trackListTasks(id);
       }
     });
-
-    // Nettoyer les listeners de tâches pour les listes supprimées
+    // Reconstruire allLists depuis le cache
+    allLists = Object.values(cachedLists).filter(function(l) { return l !== undefined; });
+    // Nettoyer les listeners de tâches orphelins
+    var activeIds = {};
+    allLists.forEach(function(l) { activeIds[l.id] = true; });
     Object.keys(unsubTasksMap).forEach(function(lid) {
-      if (!toUnsub[lid]) {
+      if (!activeIds[lid]) {
         unsubTasksMap[lid]();
         delete unsubTasksMap[lid];
         delete allTasksMap[lid];
       }
     });
-
     renderAll();
-  }, function(err) {
+  }
+
+  function onListError(err) {
     console.error('Lists listener error:', err);
-  });
+  }
+
+  if (isAdmin) {
+    // Admin : accès à toutes les listes
+    unsubLists.push(listsRef.onSnapshot(processListSnapshot, onListError));
+  } else {
+    // Non-admin : deux requêtes filtrées, cache fusionné
+    unsubLists.push(listsRef.where('createdBy', '==', email).onSnapshot(processListSnapshot, onListError));
+    unsubLists.push(listsRef.where('assignees', 'array-contains', email).onSnapshot(processListSnapshot, onListError));
+  }
 }
 
 function stopListeners() {
-  if (unsubLists) { unsubLists(); unsubLists = null; }
+  if (unsubLists) {
+    if (Array.isArray(unsubLists)) {
+      unsubLists.forEach(function(fn) { fn(); });
+    } else {
+      unsubLists();
+    }
+    unsubLists = null;
+  }
   Object.keys(unsubTasksMap).forEach(function(k) {
     unsubTasksMap[k]();
     delete unsubTasksMap[k];

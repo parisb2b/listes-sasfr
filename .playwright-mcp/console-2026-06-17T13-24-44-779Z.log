@@ -1,0 +1,3 @@
+[    1202ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://listes-sasfr.vercel.app/:0
+[  176438ms] [ERROR] Lists listener error: FirebaseError: Missing or insufficient permissions. @ https://listes-sasfr.vercel.app/:813
+[  236368ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://firestore.googleapis.com/google.firestore.v1.Firestore/Write/channel?gsessionid=80vYCAnqViWBNJRCyTXG2xgtrCbZlXYfL0aIjOBGYOJXQ9AF_GVwfA&VER=8&database=projects%2Fsasfr-chantiers%2Fdatabases%2F(default)&RID=rpc&SID=DQzXN9OHWt8aMjEGkN2f9A&AID=5&CI=0&TYPE=xmlhttp&zx=tpary3mycd0o&t=1:0

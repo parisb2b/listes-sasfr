@@ -1,0 +1,42 @@
+- generic [ref=e44]:
+  - generic [ref=e45]:
+    - generic [ref=e46]:
+      - generic [ref=e47]:
+        - generic [ref=e48]: L
+        - generic [ref=e49]: ListesClient
+      - button "⚙️ Gestion listes" [ref=e50] [cursor=pointer]:
+        - text: ⚙️
+        - generic [ref=e51]: Gestion listes
+    - generic [ref=e52]:
+      - generic [ref=e53]: Mes listes
+      - generic [ref=e54]: Listes partagées avec moi
+    - generic [ref=e55]:
+      - generic [ref=e56]: Attribuer
+      - generic [ref=e57]:
+        - generic [ref=e58]: 📋
+        - generic [ref=e59]: Sélectionnez une liste
+      - textbox "collaborateur@exemple.com" [ref=e61]
+      - button "👤 Attribuer" [disabled] [ref=e62]
+      - generic [ref=e63]:
+        - text: 🔑
+        - generic [ref=e64]: Multi-attribution possible.
+    - generic [ref=e65]:
+      - generic [ref=e66]:
+        - generic [ref=e67]: TL
+        - generic [ref=e68]:
+          - generic [ref=e69]: test-listes-2026@yopmail.com
+          - generic [ref=e70]: ...
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - button "FR" [ref=e73] [cursor=pointer]
+          - button "中文" [ref=e74] [cursor=pointer]
+        - button "⎋ Quitter" [ref=e75] [cursor=pointer]:
+          - text: ⎋
+          - generic [ref=e76]: Quitter
+  - generic [ref=e79]:
+    - generic [ref=e80]: 🗂️
+    - generic [ref=e81]: Aucune liste sélectionnée
+    - generic [ref=e82]: Choisissez une liste dans la barre latérale, ou créez-en une nouvelle.
+    - button "+ Nouvelle liste" [ref=e83] [cursor=pointer]:
+      - text: +
+      - generic [ref=e84]: Nouvelle liste
