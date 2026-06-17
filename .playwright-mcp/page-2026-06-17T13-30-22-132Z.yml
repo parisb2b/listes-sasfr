@@ -1,0 +1,65 @@
+- generic [ref=e34]:
+  - generic [ref=e36]:
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e40]: L
+          - generic [ref=e41]: ListesClient
+        - button "⚙️ Gestion listes" [ref=e42] [cursor=pointer]:
+          - text: ⚙️
+          - generic [ref=e43]: Gestion listes
+      - generic [ref=e44]:
+        - generic [ref=e45]: Mes listes
+        - generic [ref=e47]: Aucune liste créée
+        - generic [ref=e48]: Listes partagées avec moi
+        - generic [ref=e50]: Aucune liste partagée
+      - generic [ref=e51]:
+        - generic [ref=e52]: Attribuer
+        - generic [ref=e53]:
+          - generic [ref=e54]: 📋
+          - generic [ref=e55]: Sélectionnez une liste
+        - textbox "collaborateur@exemple.com" [ref=e57]
+        - button "👤 Attribuer" [disabled] [ref=e58]
+        - generic [ref=e59]:
+          - text: 🔑
+          - generic [ref=e60]: Multi-attribution possible.
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - generic [ref=e63]: TL
+          - generic [ref=e64]:
+            - generic [ref=e65]: test-listes-2026@yopmail.com
+            - generic [ref=e66]: Membre
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - button "FR" [ref=e69] [cursor=pointer]
+            - button "中文" [ref=e70] [cursor=pointer]
+          - button "⎋ Quitter" [ref=e71] [cursor=pointer]:
+            - text: ⎋
+            - generic [ref=e72]: Quitter
+    - generic [ref=e75]:
+      - generic [ref=e76]: 🗂️
+      - generic [ref=e77]: Aucune liste sélectionnée
+      - generic [ref=e78]: Choisissez une liste dans la barre latérale, ou créez-en une nouvelle.
+      - button "+ Nouvelle liste" [ref=e79] [cursor=pointer]:
+        - text: +
+        - generic [ref=e80]: Nouvelle liste
+  - generic [ref=e82]:
+    - generic [ref=e83]:
+      - heading "+ Nouvelle liste" [level=3] [ref=e84]
+      - button "✕" [ref=e85] [cursor=pointer]
+    - generic [ref=e86]:
+      - generic [ref=e87]:
+        - generic [ref=e88]: Nom de la liste *
+        - 'textbox "Ex: Chantier Bussy — Électricité" [active] [ref=e89]'
+      - generic [ref=e90]:
+        - generic [ref=e91]: Emoji (optionnel)
+        - textbox [ref=e92]: 📋
+      - generic [ref=e93]:
+        - generic [ref=e94]: Assigner à (par email, plusieurs possibles)
+        - generic [ref=e95]:
+          - textbox "email@sasfr.com" [ref=e96]
+          - button "Ajouter" [ref=e97] [cursor=pointer]
+        - generic [ref=e99]: Cette liste apparaîtra dans « Mes listes » pour vous, et dans « Listes partagées avec moi » pour les personnes assignées.
+    - generic [ref=e100]:
+      - button "Annuler" [ref=e101] [cursor=pointer]
+      - button "Créer la liste" [ref=e102] [cursor=pointer]

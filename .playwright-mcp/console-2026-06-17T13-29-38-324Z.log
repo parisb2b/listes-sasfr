@@ -1,0 +1,38 @@
+[     168ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://listes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app/:0
+[     687ms] [LOG] %c
+▲
+
+    ________   _ __ _          ____           __
+   /  _/ __/  (_) /( )_____   / __/___ ______/ /_
+   / // /_   / / __/// ___/  / /_/ __ `/ ___/ __/
+ _/ // __/  / / /_  (__  )  / __/ /_/ (__  ) /_
+/___/_/    /_/\__/ /____/  /_/  \__,_/____/\__/
+    _ __ _                         _    __                    __
+   (_) /( )_____   ____  ____     | |  / /__  _____________  / /
+  / / __/// ___/  / __ \/ __ \    | | / / _ \/ ___/ ___/ _ \/ /
+ / / /_  (__  )  / /_/ / / / /    | |/ /  __/ /  / /__/  __/ /
+/_/\__/ /____/   \____/_/ /_/     |___/\___/_/   \___/\___/_/
+  
+
+Hello!
+
+- Open Source https://vercel.com/oss
+- Careers https://vercel.com/careers
+- Status https://vercel-status.com
+
+ font-family: "Geist Mono", monospace; white-space: pre; line-height: 1; @ https://vercel.com/_next/static/immutable/chunks/0gisdixsvd9-x.js:78
+[    1421ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:86
+[    1435ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://vercel.com/api/jwt:0
+[    1448ms] [ERROR] Not signed in with the identity provider. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    2093ms] [WARNING] Deprecated API for given entry type. @ https://vercel.com/_next/static/immutable/chunks/3qsuav06ia3wm.js:18
+[    4305ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://vercel.com/_next/static/immutable/chunks/3gryczcht5t4n.js:1
+[    4344ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[    7410ms] [WARNING] The resource https://vercel.com/_next/static/immutable/media/ebay-dark.34mho2a18qqlt.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7410ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/0fd4jnxlpl_b9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7410ms] [WARNING] The resource https://vercel.com/_next/static/immutable/media/adobe-light.406_7oryl71va.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7410ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/0bo5y0eogkdqj.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7410ms] [WARNING] The resource https://vercel.com/_next/static/immutable/media/ebay-light.3ft_ki8203ov0.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7410ms] [WARNING] The resource https://vercel.com/_next/static/immutable/media/adobe-dark.1yc1msmmj95aw.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7411ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1gyyz74iy3fwh.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7411ms] [WARNING] The resource https://vercel.com/_next/static/immutable/media/stripe-light.2l_1jctpe6k_4.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0
+[    7411ms] [WARNING] The resource https://vercel.com/_next/static/immutable/media/stripe-dark.16ozjth2vgb_3.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Flistes-sasfr-n1jt5jt4s-parisb2bs-projects.vercel.app%252F%26nonce%3De8d665a49cce7e7d34577f66b2326fa7a0ae4351f996b2134d083ff805364a23:0

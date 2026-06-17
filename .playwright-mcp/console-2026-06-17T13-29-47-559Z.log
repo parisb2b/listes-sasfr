@@ -1,0 +1,2 @@
+[     433ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://listes-sasfr.vercel.app/:0
+[   50100ms] [ERROR] Tasks listener error for Aadiv0xxs7R7fYvNM3YX FirebaseError: Missing or insufficient permissions. @ https://listes-sasfr.vercel.app/:790

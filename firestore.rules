@@ -8,6 +8,17 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // Fonction helper : vérifie si l'utilisateur est admin (sécurisé si doc absent)
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+
+    function canAccessList(listId) {
+      return get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
+             || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees;
+    }
+
     // Lists collection
     match /listes_lists/{listId} {
       // Création : tout utilisateur authentifié peut créer une liste
@@ -19,52 +30,39 @@ service cloud.firestore {
                   && (
                     resource.data.createdBy == request.auth.token.email
                     || request.auth.token.email in resource.data.assignees
-                    || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                    || isAdmin()
                   );
 
       // Écriture : créateur OU admin (pour archiver, modifier nom, etc.)
       allow update: if request.auth != null
                     && (
                       resource.data.createdBy == request.auth.token.email
-                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                      || isAdmin()
                     );
 
       // Suppression : admin uniquement (suppression définitive depuis la corbeille)
-      allow delete: if request.auth != null
-                    && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+      allow delete: if request.auth != null && isAdmin();
     }
 
     // Tasks subcollection — hérite de la visibilité de la liste parente
     match /listes_lists/{listId}/tasks/{taskId} {
       // Création : assigné OU créateur de la liste parente OU admin
       allow create: if request.auth != null
-                    && (
-                      get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
-                      || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees
-                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
-                    );
+                    && (canAccessList(listId) || isAdmin());
 
       // Lecture : même règles que la liste parente
       allow read: if request.auth != null
-                  && (
-                    get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
-                    || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees
-                    || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
-                  );
+                  && (canAccessList(listId) || isAdmin());
 
       // Écriture : assigné OU créateur de la liste parente OU admin
       allow update: if request.auth != null
-                    && (
-                      get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
-                      || request.auth.token.email in get(/databases/$(database)/documents/listes_lists/$(listId)).data.assignees
-                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
-                    );
+                    && (canAccessList(listId) || isAdmin());
 
       // Suppression : créateur de la liste parente OU admin
       allow delete: if request.auth != null
                     && (
                       get(/databases/$(database)/documents/listes_lists/$(listId)).data.createdBy == request.auth.token.email
-                      || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+                      || isAdmin()
                     );
     }
   }
