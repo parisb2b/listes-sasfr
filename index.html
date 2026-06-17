@@ -783,7 +783,7 @@ function startListeners() {
 
   function trackListTasks(listId) {
     if (!unsubTasksMap[listId]) {
-      unsubTasksMap[listId] = listsRef.doc(listId).collection('tasks').orderBy('createdAt', 'desc').onSnapshot(function(taskSnap) {
+      unsubTasksMap[listId] = listsRef.doc(listId).collection('tasks').onSnapshot(function(taskSnap) {
         var tasks = [];
         taskSnap.forEach(function(tDoc) { tasks.push({ id: tDoc.id, ...tDoc.data() }); });
         allTasksMap[listId] = tasks;
@@ -878,6 +878,14 @@ function getInitialsForEmail(email) {
   var u = getUserByEmail(email);
   if (u && u.displayName) return initials(u.displayName);
   return initials(email);
+}
+
+/* Tri des tâches : favoris d'abord, puis statut (rouge→bleu→vert), puis date création */
+function compareTasks(a, b) {
+  if (a.fav !== b.fav) return a.fav ? -1 : 1;
+  var order = { red: 0, blue: 1, green: 2 };
+  if (order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
+  return (a.createdAt?.toMillis?.() || 0) - (b.createdAt?.toMillis?.() || 0);
 }
 
 function dateLabel(ts) {
@@ -1039,6 +1047,7 @@ function renderSingleList() {
 
   // Tasks
   var filtered = tasks.filter(function(t) { return taskMatchesFilter(t, activeFilter); });
+  filtered.sort(compareTasks);
   var wrap = document.getElementById('task-list-wrap');
   if (filtered.length === 0) {
     wrap.innerHTML = '<div class="empty-state"><div class="big-emoji">✅</div><div class="et" data-fr="Rien ici" data-zh="此处无内容">Rien ici</div><div data-fr="Aucune tâche dans ce filtre." data-zh="此筛选中没有任务。">Aucune tâche dans ce filtre.</div></div>';
@@ -1194,6 +1203,7 @@ function renderAllTask() {
     var owner = getUserByEmail(l.createdBy);
     var ownerName = owner ? (owner.displayName || owner.email) : l.createdBy;
     var filtered = (getTasks(l.id) || []).filter(function(t) { return taskMatchesFilter(t, activeAtFilter); });
+    filtered.sort(compareTasks);
     var tasksHtml = '';
     if (filtered.length === 0) {
       tasksHtml = '<div style="padding:14px 16px;color:var(--text-muted);font-size:12.5px;" data-fr="Aucune tâche dans ce filtre." data-zh="此筛选中没有任务。">Aucune tâche dans ce filtre.</div>';
