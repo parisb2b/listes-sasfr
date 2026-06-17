@@ -543,7 +543,21 @@ input,select,textarea{font-family:inherit;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
+<script>
+// LISTES — Configuration Firebase (inline)
+var fbConfig = {
+  apiKey: "AIzaSyDuMelJjjPWDnJOj8_rnehddcQxRMWr058",
+  authDomain: "sasfr-chantiers.firebaseapp.com",
+  projectId: "sasfr-chantiers",
+  storageBucket: "sasfr-chantiers.appspot.com"
+};
+firebase.initializeApp(fbConfig);
+var db = firebase.firestore();
+var auth = firebase.auth();
+var listsRef = db.collection('listes_lists');
+var usersRef = db.collection('users');
+var MASTER_EMAIL = 'parisb2b@gmail.com';
+</script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
