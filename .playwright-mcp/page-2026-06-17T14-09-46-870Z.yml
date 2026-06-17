@@ -1,0 +1,72 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: S
+      - generic [ref=e5]: SASFR
+      - generic [ref=e6]: sasfr.com
+    - generic [ref=e7]: Portail interne — écosystème SASFR
+  - generic [ref=e8]:
+    - heading "Choisissez votre outil" [level=1] [ref=e9]
+    - paragraph [ref=e10]: Accédez directement à l'un des espaces de travail SASFR.
+  - generic [ref=e12]:
+    - link "📋 En ligne Listes listes.sasfr.com Gestion de listes de tâches collaboratives — création, attribution multi-personnes et suivi en temps réel. 12 listes actives 5 membres Ouvrir Listes →" [ref=e13] [cursor=pointer]:
+      - /url: https://listes.sasfr.com/
+      - generic [ref=e14]:
+        - generic [ref=e15]: 📋
+        - generic [ref=e16]: En ligne
+      - generic [ref=e18]:
+        - generic [ref=e19]: Listes
+        - generic [ref=e20]: listes.sasfr.com
+      - paragraph [ref=e21]: Gestion de listes de tâches collaboratives — création, attribution multi-personnes et suivi en temps réel.
+      - generic [ref=e22]:
+        - generic [ref=e23]: 12 listes actives
+        - generic [ref=e24]: 5 membres
+      - generic [ref=e25]:
+        - text: Ouvrir Listes
+        - generic [ref=e26]: →
+    - link "🏗️ En ligne DM — Chantier Tracker dm.sasfr.com Suivi de chantiers — tâches, échéances, photos et membres d'équipe par chantier. 3 chantiers 4 membres Ouvrir DM →" [ref=e27] [cursor=pointer]:
+      - /url: https://dm.sasfr.com/
+      - generic [ref=e28]:
+        - generic [ref=e29]: 🏗️
+        - generic [ref=e30]: En ligne
+      - generic [ref=e32]:
+        - generic [ref=e33]: DM — Chantier Tracker
+        - generic [ref=e34]: dm.sasfr.com
+      - paragraph [ref=e35]: Suivi de chantiers — tâches, échéances, photos et membres d'équipe par chantier.
+      - generic [ref=e36]:
+        - generic [ref=e37]: 3 chantiers
+        - generic [ref=e38]: 4 membres
+      - generic [ref=e39]:
+        - text: Ouvrir DM
+        - generic [ref=e40]: →
+    - link "📊 En ligne Total — Comptes Client total.sasfr.com Suivi des comptes financiers clients — entrées, sorties, solde et historique des virements. 9 comptes 2 partagés Ouvrir Total →" [ref=e41] [cursor=pointer]:
+      - /url: https://total.sasfr.com/
+      - generic [ref=e42]:
+        - generic [ref=e43]: 📊
+        - generic [ref=e44]: En ligne
+      - generic [ref=e46]:
+        - generic [ref=e47]: Total — Comptes Client
+        - generic [ref=e48]: total.sasfr.com
+      - paragraph [ref=e49]: Suivi des comptes financiers clients — entrées, sorties, solde et historique des virements.
+      - generic [ref=e50]:
+        - generic [ref=e51]: 9 comptes
+        - generic [ref=e52]: 2 partagés
+      - generic [ref=e53]:
+        - text: Ouvrir Total
+        - generic [ref=e54]: →
+    - link "📦 En ligne Cargo — Optimiseur conteneur cargo.sasfr.com Optimisation du chargement de conteneurs — plans 2D/3D, export Excel et calcul de volumétrie. 40HC dernier calcul V40 Ouvrir Cargo →" [ref=e55] [cursor=pointer]:
+      - /url: https://cargo.sasfr.com/
+      - generic [ref=e56]:
+        - generic [ref=e57]: 📦
+        - generic [ref=e58]: En ligne
+      - generic [ref=e60]:
+        - generic [ref=e61]: Cargo — Optimiseur conteneur
+        - generic [ref=e62]: cargo.sasfr.com
+      - paragraph [ref=e63]: Optimisation du chargement de conteneurs — plans 2D/3D, export Excel et calcul de volumétrie.
+      - generic [ref=e64]:
+        - generic [ref=e65]: 40HC dernier calcul
+        - generic [ref=e66]: V40
+      - generic [ref=e67]:
+        - text: Ouvrir Cargo
+        - generic [ref=e68]: →
+  - generic [ref=e69]: Écosystème SASFR · sasfr.com — page d'accueil sans authentification, chaque outil gère sa propre connexion.

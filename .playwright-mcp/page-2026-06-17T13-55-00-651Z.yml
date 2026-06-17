@@ -1,0 +1,117 @@
+- generic [ref=e34]:
+  - generic [ref=e36]:
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e40]: L
+          - generic [ref=e41]: ListesClient
+        - button "⚙️ Gestion listes" [ref=e42] [cursor=pointer]:
+          - text: ⚙️
+          - generic [ref=e43]: Gestion listes
+      - generic [ref=e44]:
+        - generic [ref=e45]: Mes listes
+        - generic [ref=e139] [cursor=pointer]:
+          - generic [ref=e140]: 📋
+          - generic [ref=e141]: Test — Première liste
+        - generic [ref=e50]: Listes partagées avec moi
+        - generic [ref=e142]: Aucune liste partagée
+      - generic [ref=e53]:
+        - generic [ref=e54]: Attribuer
+        - generic [ref=e55]:
+          - generic [ref=e143]: 📋
+          - generic [ref=e144]: Test — Première liste
+        - generic [ref=e146]:
+          - text: testpartage@yopmail.com
+          - button "✕" [ref=e147] [cursor=pointer]
+        - textbox "collaborateur@exemple.com" [ref=e59]
+        - button "👤 Attribuer" [active] [ref=e60] [cursor=pointer]
+        - generic [ref=e61]:
+          - text: 🔑
+          - generic [ref=e62]: Multi-attribution possible.
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e65]: TL
+          - generic [ref=e66]:
+            - generic [ref=e67]: test-listes-2026@yopmail.com
+            - generic [ref=e68]: Membre
+        - generic [ref=e69]:
+          - generic [ref=e70]:
+            - button "FR" [ref=e71] [cursor=pointer]
+            - button "中文" [ref=e72] [cursor=pointer]
+          - button "⎋ Quitter" [ref=e73] [cursor=pointer]:
+            - text: ⎋
+            - generic [ref=e74]: Quitter
+    - generic [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - generic [ref=e79]: 📋
+          - generic [ref=e80]:
+            - heading "Test — Première liste" [level=1] [ref=e81]
+            - generic [ref=e82]: Créée par test-listes-2026 · Assignée à 1 personne(s)
+        - generic [ref=e83]:
+          - button "👥 Gérer" [ref=e84] [cursor=pointer]:
+            - text: 👥
+            - generic [ref=e85]: Gérer
+          - button "📈 Excel" [ref=e86] [cursor=pointer]
+          - button "📥 PDF" [ref=e87] [cursor=pointer]
+          - button "🗑️ Archiver" [ref=e88] [cursor=pointer]:
+            - text: 🗑️
+            - generic [ref=e89]: Archiver
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - generic [ref=e92]: Total tâches
+          - generic [ref=e93]: "2"
+        - generic [ref=e94]:
+          - generic [ref=e95]: 🔴 Non exécuté
+          - generic [ref=e96]: "0"
+        - generic [ref=e97]:
+          - generic [ref=e98]: 🔵 En cours
+          - generic [ref=e99]: "1"
+      - generic [ref=e100]:
+        - button "+ Ajouter une tâche" [ref=e101] [cursor=pointer]:
+          - text: +
+          - generic [ref=e102]: Ajouter une tâche
+        - button "🗑️ Supprimer" [ref=e103] [cursor=pointer]:
+          - text: 🗑️
+          - generic [ref=e104]: Supprimer
+      - generic [ref=e105]:
+        - generic [ref=e106] [cursor=pointer]:
+          - text: 📋
+          - generic [ref=e107]: Toutes
+        - generic [ref=e108] [cursor=pointer]:
+          - text: 📱
+          - generic [ref=e109]: À traiter
+        - generic [ref=e110] [cursor=pointer]:
+          - text: ⚡
+          - generic [ref=e111]: En cours
+        - generic [ref=e112] [cursor=pointer]:
+          - text: ✅
+          - generic [ref=e113]: Fait
+        - generic [ref=e114] [cursor=pointer]:
+          - text: ⭐
+          - generic [ref=e115]: Favoris
+        - generic [ref=e116] [cursor=pointer]:
+          - text: 🗑️
+          - generic [ref=e117]: Archives
+      - generic [ref=e118]:
+        - generic [ref=e148]:
+          - generic [ref=e149] [cursor=pointer]: ★
+          - generic [ref=e150]: "#01"
+          - generic [ref=e151]:
+            - generic [ref=e152]: Première tâche de test
+            - generic [ref=e153]: test-listes-2026 · 17/06/2026
+          - generic [ref=e154]:
+            - button "En cours" [ref=e155] [cursor=pointer]
+            - button "Fait" [ref=e156] [cursor=pointer]
+            - button "Non exécuté" [ref=e157] [cursor=pointer]
+        - generic [ref=e158]:
+          - generic [ref=e159] [cursor=pointer]: ★
+          - generic [ref=e160]: "#02"
+          - generic [ref=e161]:
+            - generic [ref=e162]: Tâche faite — test filtre
+            - generic [ref=e163]: test-listes-2026 · 17/06/2026
+          - generic [ref=e164]:
+            - button "En cours" [ref=e165] [cursor=pointer]
+            - button "Fait" [ref=e166] [cursor=pointer]
+            - button "Non exécuté" [ref=e167] [cursor=pointer]
+  - generic [ref=e168]: Liste attribuée

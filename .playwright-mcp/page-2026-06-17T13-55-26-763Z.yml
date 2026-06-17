@@ -1,0 +1,27 @@
+- generic [active]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: L
+      - generic [ref=e5]: LISTES
+    - generic [ref=e6]: listes.sasfr.com — Connectez-vous pour accéder à vos listes
+    - generic [ref=e7]:
+      - button "FR" [ref=e8] [cursor=pointer]
+      - button "中文" [ref=e9] [cursor=pointer]
+    - generic [ref=e10]:
+      - generic [ref=e11]: Email
+      - textbox "vous@exemple.com" [ref=e12]: test-listes-2026@yopmail.com
+    - generic [ref=e13]:
+      - generic [ref=e14]: Mot de passe
+      - generic [ref=e15]:
+        - textbox "········" [ref=e16]
+        - button "👁️" [ref=e17] [cursor=pointer]
+    - generic [ref=e19] [cursor=pointer]:
+      - checkbox "Se souvenir de moi" [checked] [ref=e20]
+      - generic [ref=e21]: Se souvenir de moi
+    - button "S'inscrire" [ref=e169] [cursor=pointer]
+    - generic [ref=e24]: ou
+    - button "Se connecter avec Google" [ref=e25] [cursor=pointer]:
+      - img [ref=e26]
+      - generic [ref=e31]: Se connecter avec Google
+    - generic [ref=e32]: Déjà un compte ? Se connecter
+  - generic [ref=e168]: Liste attribuée
