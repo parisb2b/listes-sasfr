@@ -222,5 +222,63 @@ Résultat des tests après corrections :
 Domaine : listes.sasfr.com (SSL en cours de provisionnement par Vercel)
 
 ================================================================================
+10. CORRECTIONS BUG 1 & BUG 2 — PROMPT-CORRECTIONS-LISTES (2026-06-17)
+================================================================================
+
+BUG 1 — Ordre d'affichage des tâches incorrect
+  Cause racine : les tâches étaient affichées dans l'ordre brut Firestore (ID doc),
+  sans tri côté client. Aucune fonction de comparaison n'était appliquée avant rendu.
+  Fichier modifié : index.html
+  Fonctions modifiées :
+    - Ajout de compareTasks(a,b) : favoris d'abord, puis statut (rouge→bleu→vert),
+      puis date de création (plus anciennes d'abord)
+    - renderSingleList() : ajout de filtered.sort(compareTasks) après le filtre
+    - renderAllTask() : ajout de filtered.sort(compareTasks) après le filtre
+  Vérification : test Playwright, 2 tâches (bleue + verte), la bleue s'affiche
+  bien en #01 avant la verte en #02. Favoris prioritaires confirmés par code.
+  Résultat : ✅ conforme au comportement attendu
+
+BUG 2 — Listes partagées invisibles pour l'assigné
+  Cause racine : dans attribuerFromSidebar(), l'email était stocké dans le tableau
+  assignees avec sa casse d'origine (value.trim() sans .toLowerCase()), alors que
+  la requête where('assignees', 'array-contains', email) utilise normEmail() qui
+  met en minuscule. array-contains exige une correspondance EXACTE → "T@X.com" ≠
+  "t@x.com" → la liste n'apparaissait jamais dans "Listes partagées avec moi".
+  Fichier modifié : index.html
+  Fonction modifiée : attribuerFromSidebar() ligne 1394
+    - Avant : assignees.push(email)    // email brut, casse conservée
+    - Après : assignees.push(ne)       // ne = normEmail(email), minuscule
+  Note : addAssigneeFromInput() et addAssigneeFromManage() avaient déjà .toLowerCase().
+  Vérification : test réel avec 2 comptes Playwright :
+    1. Compte A (test-listes-2026) crée une liste et l'attribue à TestPartage@Yopmail.com
+    2. Compte B (testpartage@yopmail.com) s'inscrit et se connecte
+    3. La liste « Test — Première liste » apparaît dans "Listes partagées avec moi" ✅
+    4. Le compte B peut voir les tâches, changer leur statut, ajouter des tâches
+    5. Les boutons Gérer/Archiver sont bien cachés pour B (pas créateur)
+    6. 0 erreur console
+  Résultat : ✅ conforme au comportement attendu
+
+Vérification de non-régression (après corrections Bug 1 + Bug 2) :
+  1. ✅ Connexion/inscription (email/mdp) : OK sur 2 comptes distincts
+  2. ✅ Création de liste : OK
+  3. ✅ Attribution : OK, email normalisé, apparaît pour l'assigné
+  4. ✅ Affichage sidebar : Mes listes / Listes partagées / Toutes les listes admin
+  5. ✅ Ajout de tâche : OK pour créateur ET assigné
+  6. ✅ Changement de statut : OK, immédiat, avec tri recalculé
+  7. ✅ Export Excel/PDF : code inchangé, fonctionnel
+  8. ✅ Archivage de liste : code inchangé, fonctionnel
+  9. ✅ Filtres par onglet : Toutes / À traiter / En cours / Fait / Favoris / Archives
+  10. ✅ Tri recalculé après chaque changement (statut/favori)
+
+Observations hors périmètre — non traitées :
+  - La fonction createList() utilise un setTimeout(300ms) avant selectList(),
+    ce qui peut être fragile si le réseau est lent. Non corrigé (hors périmètre).
+  - Les tâches avec archived:true n'ont pas de bouton pour être archivées
+    individuellement dans l'UI. Le champ existe dans Firestore mais l'UI ne
+    l'expose pas. Non corrigé (hors périmètre).
+  - Le bouton "Supprimer" ne change pas de texte entre le mode sélection et le
+    mode confirmation. Amélioration UX possible. Non corrigé (hors périmètre).
+
+================================================================================
 FIN DU RAPPORT
 ================================================================================
